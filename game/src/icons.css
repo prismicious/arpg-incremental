@@ -1,0 +1,26 @@
+.icon-sprite {
+  display: inline-block;
+  width: 32px;   /* 2x scale for better visibility, adjust as needed */
+  height: 32px;
+  background-image: url('/assets/spritesheet_32x32.png');
+  background-size: 512px 704px; /* set to actual size of Items.png */
+  background-repeat: no-repeat;
+}
+
+/* Example icon positions (adjust as needed for your sprite sheet) */
+
+.icon-helmet-wood {
+    background-position: -32px 0px; /* Adjust these values based on your sprite sheet */
+}
+
+icon-helmet-iron {
+    background-position: -64px 0px; /* Adjust these values based on your sprite sheet */
+}
+
+.equipment-img {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  object-fit: contain;
+  margin-bottom: 0.25rem; /* same as mb-1 */
+}
