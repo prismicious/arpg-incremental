@@ -1,9 +1,9 @@
-import { TiersEnum, WeaponTypes } from "../../types/interfaces/enums";
+import { TiersEnum, WeaponTypes} from "../../types/interfaces/enums";
+import type { ArmorTypeMapping } from "../../types/interfaces/enums";
 import { WeaponStats } from "./WeaponStatCreator";
+import { ArmorStats } from "./ArmorStatCreator";
 import type {
   Weapon,
-  Chestplate,
-  Helmet,
   Ring,
   Amulet,
   Potion,
@@ -39,42 +39,24 @@ export function createWeapon(
   };
 }
 
-export function createChestplate(
-  armor: number,
+export function createArmor<T extends keyof ArmorTypeMapping>(
+  armorType: T,
+  level: number,
   tier: TiersEnum,
-  health?: number
-): Chestplate {
-  const mapping = `${tier}_chest`;
-  const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-  const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
-  return {
-    type: "armor",
-    slot: "chestplate",
-    tier,
-    armor,
-    health,
-    quantity: 1,
-    sprite,
-  };
-}
-
-export function createHelmet(
-  tier: TiersEnum,
-  armor: number,
-  health?: number
-): Helmet {
-  const mapping = `${tier}_helmet`;
+): ArmorTypeMapping[T] {
+  const { armor, health } = ArmorStats(armorType, tier, level);
+  const mapping = `${tier}_${armorType}`;
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
   const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
   return {
     tier,
     type: "armor",
-    slot: "helmet",
+    slot: armorType,
     armor,
     health,
     quantity: 1,
     sprite,
-  };
+  } as ArmorTypeMapping[T];
 }
 
 export function createRing(

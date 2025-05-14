@@ -41,8 +41,8 @@ export interface Helmet extends Armor {
   slot: "helmet";
 }
 
-export interface Chestplate extends Armor {
-  slot: "chestplate";
+export interface Chest extends Armor {
+  slot: "chest";
 }
 
 export interface Ring extends Trinket {
