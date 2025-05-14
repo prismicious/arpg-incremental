@@ -109,17 +109,17 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
       </div>
       {/* Armor */}
       <div className="flex flex-col items-center">
-        {character.equipment.armor && (
+        {character.equipment.chestplate && (
           <img
-            src={`${spritePath}/${character.equipment.armor.sprite}`}
-            alt="Armor"
+            src={`${spritePath}/${character.equipment.chestplate.sprite}`}
+            alt="Chestplate"
             className="equipment-img mb-1"
           />
         )}
-        <div className="text-xs">Armor</div>
+        <div className="text-xs">Chestplate</div>
         <div className="text-xs">
-          {character.equipment.armor
-            ? `${character.equipment.armor.tier}`
+          {character.equipment.chestplate
+            ? `${character.equipment.chestplate.tier}`
             : "None"}
         </div>
       </div>

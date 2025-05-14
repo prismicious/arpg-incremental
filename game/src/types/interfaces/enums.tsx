@@ -1,4 +1,4 @@
-export type InventoryItemType = "weapon" | "armor" | "potion" | "ring" | "amulet" | "misc";
+export type InventoryItemType = "weapon" | "armor" | "potion" | "trinket" | "misc";
 
 export const TiersEnum = {
   wood: "wood",

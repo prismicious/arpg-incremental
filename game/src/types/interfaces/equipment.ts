@@ -1,4 +1,4 @@
-import type { Weapon, Armor, Helmet, Ring, Amulet } from "./inventory-item";
+import type { Weapon, Chestplate, Helmet, Ring, Amulet } from "./inventory-item";
 export interface Spell {
   name: string;
   damage: number;
@@ -8,7 +8,7 @@ export interface Spell {
 
 export interface Equipment {
   weapon: Weapon | null;
-  armor: Armor | null;
+  chestplate: Chestplate | null;
   helmet: Helmet | null;
   ring1: Ring | null;
   ring2: Ring | null;

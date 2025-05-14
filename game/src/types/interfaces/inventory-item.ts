@@ -22,22 +22,8 @@ export interface Armor extends InventoryItem {
   health?: number;
 }
 
-export interface Helmet extends Armor {
-  slot: "helmet";
-}
-
-export interface Ring extends InventoryItem {
-  type: "ring";
-  slot: "ring";
-  strength?: number;
-  dexterity?: number;
-  intelligence?: number;
-  tier: TiersEnum;
-}
-
-export interface Amulet extends InventoryItem {
-  type: "amulet";
-  slot: "amulet";
+export interface Trinket extends InventoryItem {
+  type: "trinket";
   strength?: number;
   dexterity?: number;
   intelligence?: number;
@@ -48,4 +34,21 @@ export interface Potion extends InventoryItem {
   type: "potion";
   slot: "potion1" | "potion2" | "potion3";
   healAmount: number;
+}
+
+
+export interface Helmet extends Armor {
+  slot: "helmet";
+}
+
+export interface Chestplate extends Armor {
+  slot: "chestplate";
+}
+
+export interface Ring extends Trinket {
+  slot: "ring";
+}
+
+export interface Amulet extends Trinket {
+  slot: "amulet";
 }
