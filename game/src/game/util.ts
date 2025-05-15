@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TiersEnumValues } from "../types/interfaces/enums";
 import type { Character } from "../types/interfaces/character";
-import type { InventoryItem, Weapon, Armor, Helmet, Ring, Amulet } from "../types/interfaces/inventory-item";
+import type { InventoryItem, Weapon, Chest, Helmet, Ring, Amulet } from "../types/interfaces/inventory-item";
 import type { Stats } from "../types/interfaces/stats";
 import type { AllCoords, StartGridPos } from "../types/types";
 
 function isWeapon(item: InventoryItem): item is Weapon {
   return item.type === "weapon";
 }
-function isArmor(item: InventoryItem): item is Armor {
-  return item.type === "armor" && !("slot" in item);
+function isChest(item: InventoryItem): item is Chest {
+  return item.type === "armor" && (item as any).slot === "chest";
 }
 function isHelmet(item: InventoryItem): item is Helmet {
   return item.type === "armor" && (item as any).slot === "helmet";
 }
 function isRing(item: InventoryItem): item is Ring {
-  return item.type === "ring" && (item as any).slot === "ring";
+  return item.type === "trinket" && (item as any).slot === "ring";
 }
 function isAmulet(item: InventoryItem): item is Amulet {
-  return item.type === "amulet" && (item as any).slot === "amulet";
+  return item.type === "trinket" && (item as any).slot === "amulet";
 }
 
 export function calculateEffectiveStats(character: Character): Stats {
@@ -29,7 +29,7 @@ export function calculateEffectiveStats(character: Character): Stats {
     if (isWeapon(item)) {
       effective.damage += item.damage;
     }
-    if (isArmor(item)) {
+    if (isChest(item)) {
       effective.armor += item.armor;
       if (item.health) effective.damage += 0; // or handle health elsewhere
     }

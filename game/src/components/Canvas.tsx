@@ -3,7 +3,7 @@ import {
   createWeapon,
   createRing,
   createAmulet,
-  createHelmet,
+  createArmor,
 } from "../game/factories/EquipmentFactory";
 
 import { createDefaultCharacter } from "../game/factories/CharacterFactory";
@@ -28,8 +28,8 @@ const enemyWaveManager = new EnemyWaveManager(allEnemyWaves);
 
 // Example inventory for demonstration (replace with your real inventory logic)
 const exampleInventory = {
-  weapon: createWeapon("sword", 10, "iron"),
-  helmet: createHelmet("diamond", 2, 5),
+  weapon: createWeapon("sword", 1, "iron"),
+  helmet: createArmor("helmet", 1, "diamond"),
   ring1: createRing("wood", 1),
   ring2: createRing("iron", 1),
   amulet: createAmulet("wood"),

@@ -1,4 +1,6 @@
-export type InventoryItemType = "weapon" | "armor" | "potion" | "ring" | "amulet" | "misc";
+import type { Helmet, Chest} from "./inventory-item";
+
+export type InventoryItemType = "weapon" | "armor" | "potion" | "trinket" | "misc";
 
 export const TiersEnum = {
   wood: "wood",
@@ -20,4 +22,10 @@ export const WeaponTypes = {
 } as const;
 
 export type WeaponTypes = typeof WeaponTypes[keyof typeof WeaponTypes];
+
+export interface ArmorTypeMapping {
+    helmet: Helmet;
+    chest: Chest;
+}
+
 

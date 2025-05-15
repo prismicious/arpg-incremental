@@ -19,7 +19,7 @@ export function createDefaultCharacter(): Character {
     attackSpeed: 1,
     equipment: {
       weapon: createWeapon("sword", 5, TiersEnum.wood),
-      armor: null,
+      chest: null,
       helmet: null,
       ring1: null,
       ring2: null,

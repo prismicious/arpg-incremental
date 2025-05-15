@@ -1,8 +1,9 @@
-import { TiersEnum } from "../../types/interfaces/enums";
+import { TiersEnum, WeaponTypes} from "../../types/interfaces/enums";
+import type { ArmorTypeMapping } from "../../types/interfaces/enums";
+import { WeaponStats } from "./WeaponStatCreator";
+import { ArmorStats } from "./ArmorStatCreator";
 import type {
   Weapon,
-  Armor,
-  Helmet,
   Ring,
   Amulet,
   Potion,
@@ -18,11 +19,11 @@ function getKeyByValue(
 }
 
 export function createWeapon(
-  weaponType: "sword",
-  damage: number,
+  weaponType: WeaponTypes,
+  level: number,
   tier: TiersEnum,
-  attackSpeed?: number
 ): Weapon {
+  const { damage, attackSpeed } = WeaponStats(weaponType, tier, level);
   const mapping = `${tier}_${weaponType}`;
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
   const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
@@ -38,41 +39,24 @@ export function createWeapon(
   };
 }
 
-export function createArmor(
-  armor: number,
+export function createArmor<T extends keyof ArmorTypeMapping>(
+  armorType: T,
+  level: number,
   tier: TiersEnum,
-  health?: number
-): Armor {
-  const mapping = `${tier}_chest`;
-  const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-  const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
-  return {
-    type: "armor",
-    tier,
-    armor,
-    health,
-    quantity: 1,
-    sprite,
-  };
-}
-
-export function createHelmet(
-  tier: TiersEnum,
-  armor: number,
-  health?: number
-): Helmet {
-  const mapping = `${tier}_helmet`;
+): ArmorTypeMapping[T] {
+  const { armor, health } = ArmorStats(armorType, tier, level);
+  const mapping = `${tier}_${armorType}`;
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
   const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
   return {
     tier,
     type: "armor",
-    slot: "helmet",
+    slot: armorType,
     armor,
     health,
     quantity: 1,
     sprite,
-  };
+  } as ArmorTypeMapping[T];
 }
 
 export function createRing(
@@ -85,7 +69,7 @@ export function createRing(
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
   const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
   return {
-    type: "ring",
+    type: "trinket",
     slot: "ring",
     strength,
     dexterity,
@@ -107,7 +91,7 @@ export function createAmulet(
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
   const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
   return {
-    type: "amulet",
+    type: "trinket",
     slot: "amulet",
     strength,
     dexterity,
