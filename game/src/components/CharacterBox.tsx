@@ -2,8 +2,6 @@ import React from "react";
 import type { Character } from "../types/interfaces/character";
 import type { Stats } from "../types/interfaces/stats";
 import { calculateEffectiveStats } from "../game/util";
-
-import { equipItem } from "../game/utils/equipItem";
 import { Inventory } from "./Inventory";
 
 interface CharacterBoxProps {
@@ -13,8 +11,6 @@ interface CharacterBoxProps {
   setEffectiveStats: React.Dispatch<React.SetStateAction<Stats>>;
   spritePath: string;
 }
-
-
 
 export const CharacterBox: React.FC<CharacterBoxProps> = ({
   character,
@@ -27,7 +23,7 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
   React.useEffect(() => {
     setEffectiveStats(calculateEffectiveStats(character));
     console.log(character);
-  }, [character, setEffectiveStats, equipItem]);
+  }, [character, setEffectiveStats]);
 
   return (
     <div className="bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
@@ -145,7 +141,11 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
         </div>
       </div>
       {character && (
-        <Inventory character={character} setCharacter={setCharacter} spritePath={spritePath}/>
+        <Inventory
+          character={character}
+          setCharacter={setCharacter}
+          spritePath={spritePath}
+        />
       )}
     </div>
   );

@@ -30,12 +30,12 @@ const allEnemyWaves = new AllEnemyWaves();
 allEnemyWaves.addWave(wave1);
 
 const exampleInventory = {
-          weapon: createWeapon("dagger", 1, "iron"),
-          helmet: createArmor("helmet", 1, "diamond"),
-          ring1: createTrinket("ring", 1, "wood"),
-          ring2: createTrinket("ring", 1, "wood"),
-          amulet: createTrinket("amulet", 1, "wood")
-        };
+  weapon: createWeapon("dagger", 1, "iron"),
+  helmet: createArmor("helmet", 1, "diamond"),
+  ring1: createTrinket("ring", 1, "wood"),
+  ring2: createTrinket("ring", 1, "wood"),
+  amulet: createTrinket("amulet", 1, "wood"),
+};
 
 const enemyWaveManager = new EnemyWaveManager(allEnemyWaves);
 
@@ -61,29 +61,33 @@ const Canvas: React.FC = () => {
         exampleInventory.ring1,
         exampleInventory.ring2,
         exampleInventory.amulet,
-      ]
-    }))
-  }, [exampleInventory])
+      ],
+    }));
+  }, []);
 
   return (
     <section className="min-h-screen flex flex-col bg-black text-white">
       {/* Header */}
       <header className="py-4 px-8 bg-gray-900 flex items-center">
         <h1 className="text-2xl font-bold">ARPG Incremental</h1>
-        <button className="ml-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700" onClick={() => setCharacterModalOpen((prev) => (!prev))}>
-          
-        </button>
+        <button
+          className="ml-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+          onClick={() => setCharacterModalOpen((prev) => !prev)}
+        ></button>
       </header>
       {/* Main Content */}
       <main className="flex flex-1 container mx-auto px-4 py-8 gap-6">
         <section className="flex-1 flex flex-col gap-6">
-            
           {/* Character Box */}
           {isCharacterModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50"
-                  onClick={() => setCharacterModalOpen(false)}>
-              <div className="bg-gray-800 p-6 rounded shadow-lg relative border-2 border-gray-500"
-                  onClick={(e) => e.stopPropagation()}>
+            <div
+              className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50"
+              onClick={() => setCharacterModalOpen(false)}
+            >
+              <div
+                className="bg-gray-800 p-6 rounded shadow-lg relative border-2 border-gray-500"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <button
                   className="absolute top-2 right-2 text-white"
                   onClick={() => setCharacterModalOpen(false)}
@@ -101,20 +105,20 @@ const Canvas: React.FC = () => {
             </div>
           )}
 
-            {/* Combat Box */}
-              {currentWave && effectiveStats ? (
-                <CombatBox
-                  character={character}
-                  effectiveStats={effectiveStats}
-                  currentWave={currentWave}
-                  spritePath={spritePath}
-                />
-              ) : (
-                <div>No wave or effective stats!</div>
-              )}
+          {/* Combat Box */}
+          {currentWave && effectiveStats ? (
+            <CombatBox
+              character={character}
+              effectiveStats={effectiveStats}
+              currentWave={currentWave}
+              spritePath={spritePath}
+            />
+          ) : (
+            <div>No wave or effective stats!</div>
+          )}
 
-            {/* Loot Box */}
-            {/* <LootBox /> */}
+          {/* Loot Box */}
+          {/* <LootBox /> */}
         </section>
       </main>
     </section>
