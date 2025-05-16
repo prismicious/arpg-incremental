@@ -37,15 +37,13 @@ jobs:
           node-version: 22.x
           cache: 'npm'
           cache-dependency-path: game/package-lock.json
-      - name: Set Git identity
+      - name: Deploy to GitHub Pages
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-      - name: Deploy to GitHub Pages
-        run: |
+          cd game
           npm install
           npm run deploy
-        working-directory: game
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
