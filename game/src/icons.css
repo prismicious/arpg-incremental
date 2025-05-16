@@ -24,3 +24,18 @@ icon-helmet-iron {
   object-fit: contain;
   margin-bottom: 0.25rem; /* same as mb-1 */
 }
+
+@keyframes damage-float {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -24px);
+  }
+}
+
+.animate-damage-float {
+  animation: damage-float 0.7s ease-out;
+}

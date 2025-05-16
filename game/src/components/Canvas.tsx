@@ -21,7 +21,7 @@ import CombatBox from "./CombatBox";
 
 const wave1 = createEnemyWave([
   orcPrefab,
-  orcPrefab,
+  slimePrefab,
   orcPrefab,
   goblinPrefab,
   slimePrefab,
