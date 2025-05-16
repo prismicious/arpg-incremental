@@ -17,14 +17,13 @@ jobs:
         with:
           node-version: 22.x
           cache: 'npm'
+          cache-dependency-path: game/package-lock.json
       - name: Install dependencies
-        run: |
-          cd game
-          npm install
+        run: npm install
+        working-directory: game
       - name: Build
-        run: |
-          cd game
-          npm run build
+        run: npm run build
+        working-directory: game
 
   deploy:
     if: github.ref == 'refs/heads/main'
@@ -37,11 +36,12 @@ jobs:
         with:
           node-version: 22.x
           cache: 'npm'
+          cache-dependency-path: game/package-lock.json
       - name: Deploy to GitHub Pages
         run: |
-          cd game
           npm install
           npm run deploy
+        working-directory: game
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
