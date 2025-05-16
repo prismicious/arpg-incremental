@@ -1,7 +1,18 @@
-import type { InventoryItemType, TiersEnum } from "./enums";
+import type { InventoryItemType, InventoryItemSlot, TiersEnum } from "./enums";
+
+export interface ItemTypeMapping {
+  weapon: Weapon;
+  armor: Helmet | Chest;
+  trinket: Amulet | Ring;
+  potion: Potion;
+}
+
 
 export interface InventoryItem {
   type: InventoryItemType;
+  slot: InventoryItemSlot;
+  id: string;
+  tier: TiersEnum;
   quantity?: number;
   sprite: string;
 }
@@ -12,7 +23,7 @@ export interface Weapon extends InventoryItem {
   slot: "weapon";
   damage: number;
   attackSpeed: number;
-  tier: string;
+  tier: TiersEnum;
 }
 
 export interface Armor extends InventoryItem {
@@ -32,7 +43,8 @@ export interface Trinket extends InventoryItem {
 
 export interface Potion extends InventoryItem {
   type: "potion";
-  slot: "potion1" | "potion2" | "potion3";
+  slot: "potion";
+  tier: "none";
   healAmount: number;
 }
 

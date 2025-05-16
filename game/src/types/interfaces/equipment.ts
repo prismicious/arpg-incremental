@@ -1,4 +1,4 @@
-import type { Weapon, Chest, Helmet, Ring, Amulet } from "./inventory-item";
+import type { Weapon, Chest, Helmet, Ring, Amulet, Potion } from "./inventory-item";
 export interface Spell {
   name: string;
   damage: number;
@@ -13,5 +13,6 @@ export interface Equipment {
   ring1: Ring | null;
   ring2: Ring | null;
   amulet: Amulet | null;
+  potion: Potion | null;
   spells: Spell[];
 }
