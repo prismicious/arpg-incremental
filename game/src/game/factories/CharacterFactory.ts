@@ -22,6 +22,7 @@ export function createDefaultCharacter(): Character {
       ring1: null,
       ring2: null,
       amulet: null,
+      potion: null,
       spells: [],
     },
     sprite: "../../../assets/temp/player.png",

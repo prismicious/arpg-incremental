@@ -2,12 +2,7 @@ import React from "react";
 import type { Character } from "../types/interfaces/character";
 import type { Stats } from "../types/interfaces/stats";
 import { calculateEffectiveStats } from "../game/util";
-import {
-  createWeapon,
-  createArmor,
-  createRing,
-  createAmulet,
-} from "../game/factories/EquipmentFactory";
+import { Inventory } from "./Inventory";
 
 interface CharacterBoxProps {
   character: Character;
@@ -16,14 +11,6 @@ interface CharacterBoxProps {
   setEffectiveStats: React.Dispatch<React.SetStateAction<Stats>>;
   spritePath: string;
 }
-
-const exampleInventory = {
-  weapon: createWeapon("dagger", 1, "iron"),
-  helmet: createArmor("helmet", 1, "diamond"),
-  ring1: createRing("wood", 1),
-  ring2: createRing("iron", 1),
-  amulet: createAmulet("wood"),
-};
 
 export const CharacterBox: React.FC<CharacterBoxProps> = ({
   character,
@@ -35,45 +22,8 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
   // Update effective stats when character changes
   React.useEffect(() => {
     setEffectiveStats(calculateEffectiveStats(character));
+    console.log(character);
   }, [character, setEffectiveStats]);
-
-  // Equip functions now equip from inventory (example)
-  const equipWeapon = () => {
-    setCharacter((prev) => ({
-      ...prev,
-      equipment: {
-        ...prev.equipment,
-        weapon: exampleInventory.weapon,
-      },
-    }));
-  };
-  const equipRing1 = () => {
-    setCharacter((prev) => ({
-      ...prev,
-      equipment: {
-        ...prev.equipment,
-        ring1: exampleInventory.ring1,
-      },
-    }));
-  };
-  const equipAmulet = () => {
-    setCharacter((prev) => ({
-      ...prev,
-      equipment: {
-        ...prev.equipment,
-        amulet: exampleInventory.amulet,
-      },
-    }));
-  };
-  const equipHelmet = () => {
-    setCharacter((prev) => ({
-      ...prev,
-      equipment: {
-        ...prev.equipment,
-        helmet: exampleInventory.helmet,
-      },
-    }));
-  };
 
   return (
     <div className="bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
@@ -95,12 +45,6 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
               ? `${character.equipment.helmet.tier}`
               : "None"}
           </div>
-          <button
-            className="mt-1 bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs"
-            onClick={equipHelmet}
-          >
-            Equip
-          </button>
         </div>
         {/* Amulet */}
         <div className="flex flex-col items-center">
@@ -117,12 +61,6 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
               ? `${character.equipment.amulet.slot}`
               : "None"}
           </div>
-          <button
-            className="mt-1 bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs"
-            onClick={equipAmulet}
-          >
-            Equip
-          </button>
         </div>
         {/* Ring 1 */}
         <div className="flex flex-col items-center">
@@ -139,12 +77,6 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
               ? `${character.equipment.ring1.slot}`
               : "None"}
           </div>
-          <button
-            className="mt-1 bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs"
-            onClick={equipRing1}
-          >
-            Equip
-          </button>
         </div>
         {/* Ring 2 */}
         <div className="flex flex-col items-center">
@@ -193,12 +125,6 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
               ? `${character.equipment.weapon.tier}`
               : "None"}
           </div>
-          <button
-            className="mt-1 bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-xs"
-            onClick={equipWeapon}
-          >
-            Equip
-          </button>
         </div>
       </div>
       {/* Stats below the equipment row */}
@@ -214,6 +140,13 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
           <div>Intelligence: {effectiveStats.intelligence}</div>
         </div>
       </div>
+      {character && (
+        <Inventory
+          character={character}
+          setCharacter={setCharacter}
+          spritePath={spritePath}
+        />
+      )}
     </div>
   );
 };
