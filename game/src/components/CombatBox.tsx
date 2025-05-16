@@ -26,11 +26,12 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     playerNextAttack,
     enemyNextAttack,
     enemyIndex,
+    isDead,
   } = state;
 
   const enemyCount = currentWave.enemies.length;
   const [isPaused, setIsPaused] = React.useState(true);
-
+  
   useEffect(() => {
     // Initialize combat state
     dispatch({
@@ -43,6 +44,11 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     function gameLoop() {
       if (isPaused) return;
       if (!currentEnemy) return;
+      if (currentHealth <= 0) {
+        dispatch({
+          type: "END_COMBAT"})
+        return;
+      }
       if (currentEnemyHealth <= 0) {
         // Move to the next enemy
         dispatch({
@@ -97,6 +103,20 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     currentEnemy,
   ]);
 
+  const handleButtonClick = () => {
+    if (isDead) {
+      // Restart combat
+      dispatch({
+        type: "RESTART_COMBAT",
+        payload: { enemies: currentWave.enemies, effectiveStats, character },
+      });
+      setIsPaused(true);
+      return;
+    }
+    setIsPaused((prev) => !prev)
+
+  }
+
   return (
     <div className="bg-gray-800 rounded-lg shadow p-10 flex flex-col items-center ">
       <h2 className="text-xl font-semibold mb-2">Combat</h2>
@@ -109,13 +129,14 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         <div>
           {character && effectiveStats ? (
             <>
+              {isDead ? "Dead": 
               <img
                 src={`${spritePath}/${character.sprite}`}
                 alt={"Player"}
                 className="equipment-img mb-2"
                 width={32}
                 height={32}
-              />
+              />}
               <div className="font-bold">Player</div>
               <div>
                 Health: {currentHealth} / {effectiveStats.health}
@@ -156,9 +177,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       {/* Pause / Resume button */}
       <button
         className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
-        onClick={() => setIsPaused((prev) => !prev)}
+        onClick={() => handleButtonClick()}
       >
-        {isPaused ? "Resume Combat" : "Pause Combat"}
+        {isDead ? "Restart Combat": isPaused ? "Start Combat" : "Pause Combat"}
       </button>
     </div>
   );

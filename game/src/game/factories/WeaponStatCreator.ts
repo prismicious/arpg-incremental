@@ -10,7 +10,7 @@ const AxeEnum = {
 const BowEnum = {
   base: { damage: 3, attackSpeed: 1.5 },
   scaling: {
-    damage: 0.35,
+    damage: 0.4,
     attackSpeed: 0.05,
   },
 };

@@ -10,6 +10,7 @@ export interface CombatState {
   currentHealth: number;
   playerNextAttack: number;
   enemyNextAttack: number;
+  isDead: boolean;
 }
 
 // Define the shape of actions
@@ -28,7 +29,10 @@ export type CombatAction =
   | {
       type: "UPDATE_ATTACK_TIMERS";
       payload: { playerDelay: number; enemyDelay: number };
-    };
+    }
+  | { type: "RESTART_COMBAT"; payload: {enemies:IEnemy[], effectiveStats: Stats, character: Character} }
+  | { type: "END_COMBAT"; }
+
 
 // Update the initial state type
 export const initialState: CombatState = {
@@ -38,6 +42,7 @@ export const initialState: CombatState = {
   currentHealth: 0,
   playerNextAttack: 0,
   enemyNextAttack: 0,
+  isDead: false,
 };
 
 // Update the reducer function
@@ -90,6 +95,22 @@ export function reducer(state: CombatState, action: CombatAction): CombatState {
         playerNextAttack: state.playerNextAttack + action.payload.playerDelay,
         enemyNextAttack: state.enemyNextAttack + action.payload.enemyDelay,
       };
+    case "RESTART_COMBAT":
+      return {
+        ...state,
+        currentEnemy: action.payload.enemies[0],
+        currentEnemyHealth: action.payload.enemies[0].health,
+        currentHealth: action.payload.effectiveStats.health,
+        playerNextAttack: 1 / action.payload.effectiveStats.attackSpeed,
+        enemyNextAttack: 1 / action.payload.enemies[0].attackSpeed,
+        enemyIndex: 0,
+        isDead: false,
+      };
+      case "END_COMBAT":
+        return {
+          ...state,
+          isDead: true,
+        };
 
     default:
       return state;
