@@ -8,5 +8,4 @@ export interface IEnemy {
   loot: InventoryItem[];
   attackSpeed: number; // Attacks per second
   sprite: string;
-  maxHealth: number;
 }

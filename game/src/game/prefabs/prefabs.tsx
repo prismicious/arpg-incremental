@@ -27,16 +27,16 @@ export const orcPrefab: EnemyPrefab = {
   health: 120,
   damage: 20,
   attackSpeed: 0.8,
-  sprite: "_na.png",
+  sprite: "../../../assets/temp/orc.png",
   loot: [createWeapon("sword", 7, TiersEnum.iron)],
   armor: 5,
 };
 
 export const slimePrefab: EnemyPrefab = {
-    name: "Slime",
-    health: 30,
-    damage: 5,
-    attackSpeed: 1.5,
-    sprite: "_na.png",
-    loot: [createWeapon("sword", 2, TiersEnum.iron)],
-    };
+  name: "Slime",
+  health: 30,
+  damage: 5,
+  attackSpeed: 1.5,
+  sprite: "_na.png",
+  loot: [createWeapon("sword", 2, TiersEnum.iron)],
+};

@@ -4,21 +4,19 @@ import { createWeapon } from "./EquipmentFactory";
 
 export function createDefaultCharacter(): Character {
   return {
-    health: 100,
-    currentHealth: 100,
-    mana: 0,
-    currentMana: 0,
     Stats: {
+      health: 100,
+      mana: 0,
       damage: 5,
+      attackSpeed: 1,
       armor: 5,
       strength: 1,
       dexterity: 1,
       intelligence: 1,
     },
     inventory: [],
-    attackSpeed: 1,
     equipment: {
-      weapon: createWeapon("sword", 5, TiersEnum.wood),
+      weapon: createWeapon("sword", 1, TiersEnum.wood),
       chest: null,
       helmet: null,
       ring1: null,
@@ -26,5 +24,6 @@ export function createDefaultCharacter(): Character {
       amulet: null,
       spells: [],
     },
+    sprite: "../../../assets/temp/player.png",
   };
 }

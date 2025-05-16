@@ -11,7 +11,7 @@ export interface Weapon extends InventoryItem {
   weaponType: "sword" | "axe" | "bow" | "dagger";
   slot: "weapon";
   damage: number;
-  attackSpeed?: number;
+  attackSpeed: number;
   tier: string;
 }
 
@@ -35,7 +35,6 @@ export interface Potion extends InventoryItem {
   slot: "potion1" | "potion2" | "potion3";
   healAmount: number;
 }
-
 
 export interface Helmet extends Armor {
   slot: "helmet";
