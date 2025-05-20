@@ -1,5 +1,12 @@
 import type { ICharacter, InventoryItemUnion } from "../interfaces/character";
 import type { Equipment } from "../interfaces/equipment";
+import type {
+  Amulet,
+  Chest,
+  Helmet,
+  Potion,
+  Weapon,
+} from "../interfaces/inventory-item";
 import type { Stats } from "../interfaces/stats";
 
 export class Character implements ICharacter {
@@ -105,8 +112,16 @@ export class Character implements ICharacter {
     let newInventory = this.inventory.filter((i) => i.id !== item.id);
     if (prevEquipped) {
       newInventory = [...newInventory, prevEquipped];
-    }    
-      this.equipment[slot] = item;
-      this.inventory = newInventory;
+    }
+
+    // this.equipment[slot] = item as ItemTypeMapping[slot];
+
+    if (slot === "weapon") this.equipment[slot] = item as Weapon;
+    if (slot === "chest") this.equipment[slot] = item as Chest;
+    if (slot === "helmet") this.equipment[slot] = item as Helmet;
+    if (slot === "amulet") this.equipment[slot] = item as Amulet;
+    if (slot === "potion") this.equipment[slot] = item as Potion;
+
+    this.inventory = newInventory;
   }
 }
