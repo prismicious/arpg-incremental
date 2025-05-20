@@ -13,11 +13,11 @@ import {
   createArmor,
   createTrinket,
 } from "../game/factories/EquipmentFactory";
-import { Character } from "../types/models/character-class";
 
 // Import new components
 import CharacterBox from "./CharacterBox";
 import CombatBox from "./CombatBox";
+import type { InventoryItemUnion } from "../types/interfaces/character";
 // import LootBox from "./LootBox";
 
 const wave1 = createEnemyWave([
@@ -30,13 +30,13 @@ const wave1 = createEnemyWave([
 const allEnemyWaves = new AllEnemyWaves();
 allEnemyWaves.addWave(wave1);
 
-const exampleInventory = {
-  weapon: createWeapon("dagger", 1, "iron"),
-  helmet: createArmor("helmet", 1, "diamond"),
-  ring1: createTrinket("ring", 1, "wood"),
-  ring2: createTrinket("ring", 1, "wood"),
-  amulet: createTrinket("amulet", 1, "wood"),
-};
+const exampleInventory: InventoryItemUnion[] = [
+  createWeapon("dagger", 1, "iron"),
+  createArmor("helmet", 1, "diamond"),
+  createTrinket("ring", 1, "wood"),
+  createTrinket("ring", 1, "wood"),
+  createTrinket("amulet", 1, "wood"),
+];
 
 const enemyWaveManager = new EnemyWaveManager(allEnemyWaves);
 
@@ -54,20 +54,7 @@ const Canvas: React.FC = () => {
   const currentWave = enemyWaveManager.currentWave;
 
   React.useEffect(() => {
-    setCharacter((prev) =>
-      new Character(
-        prev.stats,
-        [
-          exampleInventory.weapon,
-          exampleInventory.helmet,
-          exampleInventory.ring1,
-          exampleInventory.ring2,
-          exampleInventory.amulet,
-        ],
-        prev.equipment,
-        prev.sprite
-      )
-    );
+    character.addItemToInventory(exampleInventory);
   }, []);
 
   return (

@@ -32,7 +32,7 @@ export class Character implements ICharacter {
 
   // TODO: Fix this mess
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleCombatEnd(amount: number, loot: any): void {
+  handleFightEnd(amount: number, loot: any): void {
     console.log("Combat ended, gained experience:", amount);
     console.log("Loot received:", loot);
     this.experience += amount;
@@ -63,5 +63,50 @@ export class Character implements ICharacter {
 
   getExperienceToNextLevel(): number {
     return Math.floor(this.level * 100 * 1.25);
+  }
+
+  addItemToInventory(item: InventoryItemUnion | InventoryItemUnion[]): void {
+    if (Array.isArray(item)) {
+      this.inventory.push(...item);
+      return;
+    }
+
+    this.inventory.push(item);
+  }
+
+  equipItem(item: InventoryItemUnion): void {
+    if (!item) return;
+    const slot = item.slot;
+    if (slot === "ring") {
+      // Ring 2
+      if (!this.equipment.ring2 && this.equipment.ring1) {
+        const prevEquipped = this.equipment.ring2;
+        let newInventory = this.inventory.filter((i) => i.id !== item.id);
+        if (prevEquipped) {
+          newInventory = [...newInventory, prevEquipped];
+        }
+        this.equipment.ring2 = item;
+        this.inventory = newInventory;
+      } else {
+        // Ring 1
+        const prevEquipped = this.equipment.ring1;
+        let newInventory = this.inventory.filter((i) => i.id !== item.id);
+        if (prevEquipped) {
+          newInventory = [...newInventory, prevEquipped];
+        }
+        this.equipment.ring1 = item;
+        this.inventory = newInventory;
+      }
+      return;
+    }
+    // For all other slots
+    const prevEquipped = this.equipment[slot];
+
+    let newInventory = this.inventory.filter((i) => i.id !== item.id);
+    if (prevEquipped) {
+      newInventory = [...newInventory, prevEquipped];
+    }    
+      this.equipment[slot] = item;
+      this.inventory = newInventory;
   }
 }

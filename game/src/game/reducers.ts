@@ -40,10 +40,7 @@ export type CombatAction =
         character: Character;
       };
     }
-  | { type: "END_COMBAT", payload: {
-      enemies: IEnemy[];
-      character: Character;
-  } };
+  | { type: "END_COMBAT" };
 
 // Update the initial state type
 export const initialState: CombatState = {
@@ -121,8 +118,6 @@ export function reducer(state: CombatState, action: CombatAction): CombatState {
       return {
         ...state,
         isDead: true,
-        experience: action.payload.enemies[0].experienceGranted,
-        loot: action.payload.enemies[0].loot,
       };
 
     default:

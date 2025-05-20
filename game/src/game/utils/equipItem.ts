@@ -17,6 +17,8 @@ export function equipItem<T extends keyof ItemTypeMapping>(
           newInventory = [...newInventory, prevEquipped];
         }
 
+        
+
         return new Character(
           prev.stats,
           newInventory,

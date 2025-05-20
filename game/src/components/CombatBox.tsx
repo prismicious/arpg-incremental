@@ -64,17 +64,17 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       if (currentHealth <= 0) {
         // Move to the next enemy
         // WHY IS THIS NOT WORKING!?
-        character.handleCombatEnd(currentEnemy.experienceGranted, currentEnemy.loot);
         dispatch({
           type: "END_COMBAT",
-          payload: {
-            enemies: currentWave.enemies,
-            character,
-          },
         });
         return;
       }
       if (currentEnemyHealth <= 0) {
+        character.handleFightEnd(
+          currentEnemy.experienceGranted,
+          currentEnemy.loot
+        );
+        // Move to the next enemy
         dispatch({
           type: "NEXT_ENEMY",
           payload: { enemies: currentWave.enemies },
@@ -144,7 +144,6 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
 
   const handleButtonClick = () => {
     if (isDead) {
-      
       // Restart combat
       dispatch({
         type: "RESTART_COMBAT",
