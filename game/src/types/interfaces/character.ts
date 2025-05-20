@@ -9,4 +9,6 @@ export interface Character {
   inventory: InventoryItemUnion[];
   equipment: Equipment;
   sprite: string;
+  experience: number;
+  level: number;
 }

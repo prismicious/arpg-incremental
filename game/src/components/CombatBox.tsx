@@ -35,7 +35,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   // Damage number state
   const [playerDamage, setPlayerDamage] = useState<number | null>(null);
   const [enemyDamage, setEnemyDamage] = useState<number | null>(null);
-  const playerDamageTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const playerDamageTimeout = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
   const enemyDamageTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -49,7 +51,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   useEffect(() => {
     // Cleanup timeouts on unmount
     return () => {
-      if (playerDamageTimeout.current) clearTimeout(playerDamageTimeout.current);
+      if (playerDamageTimeout.current)
+        clearTimeout(playerDamageTimeout.current);
       if (enemyDamageTimeout.current) clearTimeout(enemyDamageTimeout.current);
     };
   }, []);
@@ -59,6 +62,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       if (isPaused) return;
       if (!currentEnemy) return;
       if (currentHealth <= 0) {
+        // Move to the next enemy
         dispatch({
           type: "END_COMBAT",
         });
@@ -73,8 +77,12 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         // Enemy attacks player
         const dmg = Math.max(currentEnemy.damage - effectiveStats.armor, 0);
         setPlayerDamage(dmg);
-        if (playerDamageTimeout.current) clearTimeout(playerDamageTimeout.current);
-        playerDamageTimeout.current = setTimeout(() => setPlayerDamage(null), 700);
+        if (playerDamageTimeout.current)
+          clearTimeout(playerDamageTimeout.current);
+        playerDamageTimeout.current = setTimeout(
+          () => setPlayerDamage(null),
+          700
+        );
 
         dispatch({
           type: "UPDATE_PLAYER_HEALTH",
@@ -88,8 +96,12 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         // Player attacks enemy
         const dmg = Math.max(effectiveStats.damage - currentEnemy.armor, 0);
         setEnemyDamage(dmg);
-        if (enemyDamageTimeout.current) clearTimeout(enemyDamageTimeout.current);
-        enemyDamageTimeout.current = setTimeout(() => setEnemyDamage(null), 700);
+        if (enemyDamageTimeout.current)
+          clearTimeout(enemyDamageTimeout.current);
+        enemyDamageTimeout.current = setTimeout(
+          () => setEnemyDamage(null),
+          700
+        );
 
         dispatch({
           type: "UPDATE_ENEMY_HEALTH",
@@ -151,7 +163,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
             <>
               {/* Health Numbers Above Bar */}
               <div className="mb-0.5 text-xs text-white font-bold">
-                {Math.floor(currentHealth)} / {Math.floor(effectiveStats.health)}
+                {Math.floor(currentHealth)} /{" "}
+                {Math.floor(effectiveStats.health)}
               </div>
               {/* Thin Health Bar */}
               <div className="w-24 h-1 bg-gray-700 rounded mb-1 relative">
@@ -186,9 +199,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                 </div>
               )}
               <div className="font-bold text-center">Player</div>
-              <div>Damage: {Math.floor(effectiveStats.damage)}</div>
-              <div>Armor: {Math.floor(effectiveStats.armor)}</div>
-              <div>Attack Speed: {Math.floor(effectiveStats.attackSpeed)}</div>
+              <div>Damage: {effectiveStats.damage}</div>
+              <div>Armor: {effectiveStats.armor}</div>
+              <div>Attack Speed: {effectiveStats.attackSpeed}</div>
             </>
           ) : (
             <div>No character!</div>
@@ -201,7 +214,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
             <>
               {/* Health Numbers Above Bar */}
               <div className="mb-0.5 text-xs text-white font-bold">
-                {Math.floor(currentEnemyHealth)} / {Math.floor(currentEnemy.health)}
+                {Math.floor(currentEnemyHealth)} /{" "}
+                {Math.floor(currentEnemy.health)}
               </div>
               {/* Thin Health Bar */}
               <div className="w-32 h-1 bg-gray-700 rounded mb-1 relative">
@@ -210,7 +224,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   style={{
                     width: `${Math.max(
                       0,
-                      ((currentEnemyHealth / currentEnemy.health) * 100)
+                      (currentEnemyHealth / currentEnemy.health) * 100
                     )}%`,
                     transition: "width 0.3s",
                   }}
@@ -232,9 +246,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                 />
               </div>
               <div className="font-bold text-center">{currentEnemy.name}</div>
-              <div>Damage: {Math.floor(currentEnemy.damage)}</div>
-              <div>Armor: {Math.floor(currentEnemy.armor)}</div>
-              <div>Attack Speed: {Math.floor(currentEnemy.attackSpeed)}</div>
+              <div>Damage: {currentEnemy.damage}</div>
+              <div>Armor: {currentEnemy.armor}</div>
+              <div>Attack Speed: {currentEnemy.attackSpeed}</div>
             </>
           ) : (
             <div>No enemy!</div>

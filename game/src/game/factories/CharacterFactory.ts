@@ -26,5 +26,7 @@ export function createDefaultCharacter(): Character {
       spells: [],
     },
     sprite: "../../../assets/temp/player.png",
+    experience: 0,
+    level: 1
   };
 }
