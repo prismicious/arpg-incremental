@@ -52,7 +52,7 @@ export const WeaponStats = (
   const scaling = WeaponScaling[weaponType].scaling;
   const tierMultiplier = TierMultiplier[tier];
 
-  const damage = (base.damage + scaling.damage * level) * tierMultiplier.damage;
+  const damage = Math.round((base.damage + scaling.damage * level) * tierMultiplier.damage);
   const attackSpeed =
     (base.attackSpeed + scaling.attackSpeed * level) *
     tierMultiplier.attackSpeed;
