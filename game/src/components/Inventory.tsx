@@ -1,7 +1,6 @@
 import React from "react";
 import { equipItem } from "../game/utils/equipItem";
-import type { Character } from "../types/interfaces/character";
-
+import type { Character } from "../types/models/character-class";
 
 interface InventoryProps {
   character: Character;

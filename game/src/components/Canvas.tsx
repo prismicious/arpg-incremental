@@ -13,6 +13,7 @@ import {
   createArmor,
   createTrinket,
 } from "../game/factories/EquipmentFactory";
+import { Character } from "../types/models/character-class";
 
 // Import new components
 import CharacterBox from "./CharacterBox";
@@ -53,16 +54,20 @@ const Canvas: React.FC = () => {
   const currentWave = enemyWaveManager.currentWave;
 
   React.useEffect(() => {
-    setCharacter((prev) => ({
-      ...prev,
-      inventory: [
-        exampleInventory.weapon,
-        exampleInventory.helmet,
-        exampleInventory.ring1,
-        exampleInventory.ring2,
-        exampleInventory.amulet,
-      ],
-    }));
+    setCharacter((prev) =>
+      new Character(
+        prev.stats,
+        [
+          exampleInventory.weapon,
+          exampleInventory.helmet,
+          exampleInventory.ring1,
+          exampleInventory.ring2,
+          exampleInventory.amulet,
+        ],
+        prev.equipment,
+        prev.sprite
+      )
+    );
   }, []);
 
   return (

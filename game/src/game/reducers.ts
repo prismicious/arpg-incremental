@@ -1,7 +1,7 @@
 import type { IEnemy } from "../types/interfaces/enemy";
-import type { Character } from "../types/interfaces/character";
+import { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
-
+import type { InventoryItem } from "../types/interfaces/inventory-item";
 // Define the shape of the state
 export interface CombatState {
   currentEnemy: IEnemy | null;
@@ -11,6 +11,8 @@ export interface CombatState {
   playerNextAttack: number;
   enemyNextAttack: number;
   isDead: boolean;
+  experience?: number;
+  loot?: InventoryItem[];
 }
 
 // Define the shape of actions
@@ -30,9 +32,18 @@ export type CombatAction =
       type: "UPDATE_ATTACK_TIMERS";
       payload: { playerDelay: number; enemyDelay: number };
     }
-  | { type: "RESTART_COMBAT"; payload: {enemies:IEnemy[], effectiveStats: Stats, character: Character} }
-  | { type: "END_COMBAT"; }
-
+  | {
+      type: "RESTART_COMBAT";
+      payload: {
+        enemies: IEnemy[];
+        effectiveStats: Stats;
+        character: Character;
+      };
+    }
+  | { type: "END_COMBAT", payload: {
+      enemies: IEnemy[];
+      character: Character;
+  } };
 
 // Update the initial state type
 export const initialState: CombatState = {
@@ -106,11 +117,13 @@ export function reducer(state: CombatState, action: CombatAction): CombatState {
         enemyIndex: 0,
         isDead: false,
       };
-      case "END_COMBAT":
-        return {
-          ...state,
-          isDead: true,
-        };
+    case "END_COMBAT":
+      return {
+        ...state,
+        isDead: true,
+        experience: action.payload.enemies[0].experienceGranted,
+        loot: action.payload.enemies[0].loot,
+      };
 
     default:
       return state;

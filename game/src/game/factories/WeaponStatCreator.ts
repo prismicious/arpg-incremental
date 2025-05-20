@@ -22,7 +22,7 @@ const DaggerEnum = {
   },
 };
 const SwordEnum = {
-  base: { damage: 7, attackSpeed: 1 },
+  base: { damage: 25, attackSpeed: 1 },
   scaling: {
     damage: 1.2,
     attackSpeed: 0.01,
@@ -37,7 +37,7 @@ const WeaponScaling = {
 const TierMultiplier = {
   wood: { damage: 1, attackSpeed: 1 },
   iron: { damage: 1.2, attackSpeed: 1.05 },
-  diamond: { damage: 1.5, attackSpeed: 1.1 },
+  diamond: { damage: 10, attackSpeed: 1.1 },
   gold: { damage: 2, attackSpeed: 1.15 },
   crimson: { damage: 2.5, attackSpeed: 1.2 },
   none: { damage: 0, attackSpeed: 0 },

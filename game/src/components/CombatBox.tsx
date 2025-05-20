@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useRef, useState } from "react";
 import { reducer, initialState } from "../game/reducers";
 import type { EnemyWave } from "../types/models/enemy-wave-class";
-import type { Character } from "../types/interfaces/character";
+import { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
 
 interface CombatBoxProps {
@@ -63,8 +63,14 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       if (!currentEnemy) return;
       if (currentHealth <= 0) {
         // Move to the next enemy
+        // WHY IS THIS NOT WORKING!?
+        character.handleCombatEnd(currentEnemy.experienceGranted, currentEnemy.loot);
         dispatch({
           type: "END_COMBAT",
+          payload: {
+            enemies: currentWave.enemies,
+            character,
+          },
         });
         return;
       }
@@ -138,6 +144,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
 
   const handleButtonClick = () => {
     if (isDead) {
+      
       // Restart combat
       dispatch({
         type: "RESTART_COMBAT",
@@ -201,7 +208,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
               <div className="font-bold text-center">Player</div>
               <div>Damage: {effectiveStats.damage}</div>
               <div>Armor: {effectiveStats.armor}</div>
-              <div>Attack Speed: {effectiveStats.attackSpeed}</div>
+              <div>Attack Speed: {effectiveStats.attackSpeed.toFixed(1)}</div>
             </>
           ) : (
             <div>No character!</div>
@@ -248,7 +255,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
               <div className="font-bold text-center">{currentEnemy.name}</div>
               <div>Damage: {currentEnemy.damage}</div>
               <div>Armor: {currentEnemy.armor}</div>
-              <div>Attack Speed: {currentEnemy.attackSpeed}</div>
+              <div>Attack Speed: {currentEnemy.attackSpeed.toFixed(1)}</div>
             </>
           ) : (
             <div>No enemy!</div>

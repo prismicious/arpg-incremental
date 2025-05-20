@@ -1,5 +1,5 @@
 import React from "react";
-import type { Character } from "../types/interfaces/character";
+import type { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
 import { calculateEffectiveStats } from "../game/util";
 import { Inventory } from "./Inventory";
