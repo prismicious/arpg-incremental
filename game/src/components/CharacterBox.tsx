@@ -138,6 +138,8 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
           <div>Strength: {effectiveStats.strength}</div>
           <div>Dexterity: {effectiveStats.dexterity}</div>
           <div>Intelligence: {effectiveStats.intelligence}</div>
+          <div>Experience: {character.experience}</div>
+          <div>Level: {character.level}</div>
         </div>
       </div>
       {character && (

@@ -14,11 +14,11 @@ export class Character implements ICharacter {
   inventory: InventoryItemUnion[];
   equipment: Equipment;
   sprite: string;
-  experience: number;
-  level: number;
-  totalExperience: number;
-  unallocAttrPts: number;
-  gold: number;
+  experience: number = 0;
+  level: number = 1;
+  totalExperience: number = 0;
+  unallocAttrPts: number = 0;
+  gold: number = 0;
 
   constructor(
     stats: Stats,
@@ -30,11 +30,6 @@ export class Character implements ICharacter {
     this.inventory = inventory;
     this.equipment = equipment;
     this.sprite = sprite;
-    this.experience = 0;
-    this.totalExperience = 0;
-    this.level = 1;
-    this.unallocAttrPts = 0;
-    this.gold = 0;
   }
 
   // TODO: Fix this mess
@@ -64,6 +59,7 @@ export class Character implements ICharacter {
   }
 
   levelUp(): void {
+    this.experience -= this.getExperienceToNextLevel();
     this.level++;
     this.unallocAttrPts += 4; // Example: 5 points to allocate on level up
   }
