@@ -1,5 +1,5 @@
 import React from "react";
-import type { Character } from "../types/interfaces/character";
+import type { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
 import { calculateEffectiveStats } from "../game/util";
 import { Inventory } from "./Inventory";
@@ -138,6 +138,8 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
           <div>Strength: {effectiveStats.strength}</div>
           <div>Dexterity: {effectiveStats.dexterity}</div>
           <div>Intelligence: {effectiveStats.intelligence}</div>
+          <div>Experience: {character.experience}</div>
+          <div>Level: {character.level}</div>
         </div>
       </div>
       {character && (

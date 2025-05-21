@@ -8,4 +8,6 @@ export interface IEnemy {
   loot: InventoryItem[];
   attackSpeed: number; // Attacks per second
   sprite: string;
+  experienceGranted: number;
+  monsterLevel?: number; // Optional property for monster level
 }

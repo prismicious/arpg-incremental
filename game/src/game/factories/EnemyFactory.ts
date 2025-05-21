@@ -4,7 +4,10 @@ import { EnemyWave } from "../../types/models/enemy-wave-class";
 import type { EnemyPrefab } from "../prefabs/prefabs";
 
 export function createEnemy(prefab: EnemyPrefab): IEnemy {
-  return new Enemy(prefab);
+  // Added so we can see the prefab in the console
+  const enemy = new Enemy(prefab);
+  console.log("Enemy created:", enemy);
+  return enemy;
 }
 
 export function createEnemyWave(prefabs: EnemyPrefab[]): EnemyWave {

@@ -9,6 +9,8 @@ export interface EnemyPrefab {
   attackSpeed: number;
   sprite: string;
   loot: InventoryItem[];
+  experienceGranted: number;
+  monsterLevel?: number;
   armor?: number;
 }
 
@@ -20,6 +22,8 @@ export const goblinPrefab: EnemyPrefab = {
   sprite: "_na.png",
   loot: [createWeapon("sword", 3, TiersEnum.wood)],
   armor: 2,
+  experienceGranted: 50,
+  monsterLevel: 1
 };
 
 export const orcPrefab: EnemyPrefab = {
@@ -30,6 +34,8 @@ export const orcPrefab: EnemyPrefab = {
   sprite: "../../../assets/temp/orc.png",
   loot: [createWeapon("sword", 7, TiersEnum.iron)],
   armor: 5,
+  experienceGranted: 60,
+  monsterLevel: 1
 };
 
 export const slimePrefab: EnemyPrefab = {
@@ -39,4 +45,6 @@ export const slimePrefab: EnemyPrefab = {
   attackSpeed: 1.5,
   sprite: "_na.png",
   loot: [createWeapon("sword", 2, TiersEnum.iron)],
+  experienceGranted: 30,
+  monsterLevel: 1
 };
