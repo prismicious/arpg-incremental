@@ -1,13 +1,13 @@
-import { TiersEnum, WeaponTypes} from "../../types/interfaces/enums";
-import type { ArmorTypeMapping, TrinketTypeMapping } from "../../types/interfaces/enums";
+import { TiersEnum, WeaponTypes } from "../../types/interfaces/enums";
+import type {
+  ArmorTypeMapping,
+  TrinketTypeMapping,
+} from "../../types/interfaces/enums";
 import { WeaponStats } from "./WeaponStatCreator";
 import { ArmorStats } from "./ArmorStatCreator";
 import { TrinketStats } from "./TrinketStatCreator";
 import { generateUniqueId } from "../utils/generateUniqueId";
-import type {
-  Weapon,
-  Potion,
-} from "../../types/interfaces/inventory-item";
+import type { Weapon, Potion } from "../../types/interfaces/inventory-item";
 import { spriteTileToNameMap } from "../spriteMap";
 
 // Helper
@@ -21,7 +21,7 @@ function getKeyByValue(
 export function createWeapon(
   weaponType: WeaponTypes,
   level: number,
-  tier: TiersEnum,
+  tier: TiersEnum
 ): Weapon {
   const { damage, attackSpeed } = WeaponStats(weaponType, tier, level);
   const mapping = `${tier}_${weaponType}`;
@@ -44,7 +44,8 @@ export function createAllWeapons() {
   const weapons: Weapon[] = [];
   for (const weaponType of Object.values(WeaponTypes)) {
     for (const tier of Object.values(TiersEnum)) {
-        weapons.push(createWeapon(weaponType, 1, tier));
+      if (tier === TiersEnum.none) continue;
+      weapons.push(createWeapon(weaponType, 1, tier));
     }
   }
   return weapons;
@@ -53,7 +54,7 @@ export function createAllWeapons() {
 export function createArmor<T extends keyof ArmorTypeMapping>(
   armorType: T,
   level: number,
-  tier: TiersEnum,
+  tier: TiersEnum
 ): ArmorTypeMapping[T] {
   const { armor, health } = ArmorStats(armorType, tier, level);
   const mapping = `${tier}_${armorType}`;
@@ -71,22 +72,29 @@ export function createArmor<T extends keyof ArmorTypeMapping>(
 }
 
 export function createTrinket<T extends keyof TrinketTypeMapping>(
-  trinketType: T, level: number, tier: TiersEnum,): TrinketTypeMapping[T] {
-    const { strength, dexterity, intelligence } = TrinketStats(trinketType, tier, level);
-    const mapping = `${tier}_${trinketType}`;
-    const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-    const sprite = tileIndex !== undefined ? `${tileIndex}.png` : "missing.png";
-    return {
-      type: "trinket",
-      id: generateUniqueId(`${trinketType}`),
-      slot: trinketType,
-      strength,
-      dexterity,
-      intelligence,
-      sprite,
-      tier,
-    } as TrinketTypeMapping[T];
-  }
+  trinketType: T,
+  level: number,
+  tier: TiersEnum
+): TrinketTypeMapping[T] {
+  const { strength, dexterity, intelligence } = TrinketStats(
+    trinketType,
+    tier,
+    level
+  );
+  const mapping = `${tier}_${trinketType}`;
+  const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
+  const sprite = tileIndex !== undefined ? `${tileIndex}.png` : "missing.png";
+  return {
+    type: "trinket",
+    id: generateUniqueId(`${trinketType}`),
+    slot: trinketType,
+    strength,
+    dexterity,
+    intelligence,
+    sprite,
+    tier,
+  } as TrinketTypeMapping[T];
+}
 
 export function createPotion(healAmount: number, quantity?: number): Potion {
   return {
