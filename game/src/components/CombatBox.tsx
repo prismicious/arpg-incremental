@@ -62,8 +62,6 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       if (isPaused) return;
       if (!currentEnemy) return;
       if (currentHealth <= 0) {
-        // Move to the next enemy
-        // WHY IS THIS NOT WORKING!?
         dispatch({
           type: "END_COMBAT",
         });
@@ -74,7 +72,6 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
           currentEnemy.experienceGranted,
           currentEnemy.loot
         );
-        // Move to the next enemy
         dispatch({
           type: "NEXT_ENEMY",
           payload: { enemies: currentWave.enemies },
@@ -87,7 +84,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
           clearTimeout(playerDamageTimeout.current);
         playerDamageTimeout.current = setTimeout(
           () => setPlayerDamage(null),
-          700
+          120 // was 250
         );
 
         dispatch({
@@ -106,7 +103,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
           clearTimeout(enemyDamageTimeout.current);
         enemyDamageTimeout.current = setTimeout(
           () => setEnemyDamage(null),
-          700
+          120 // was 250
         );
 
         dispatch({
@@ -156,8 +153,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow p-10 flex flex-col items-center ">
-      <h2 className="text-xl font-semibold mb-2">Combat</h2>
+    <div className="bg-zinc-900/80 rounded-2xl shadow-2xl p-10 flex flex-col items-center border border-gray-700 max-w-xl w-full">
+      <h2 className="text-xl font-semibold mb-2 tracking-wide">Combat</h2>
       {/* Enemy Counter */}
       <div className="mb-2 text-sm text-gray-300">
         Enemy {enemyIndex + 1} / {enemyCount}
@@ -198,7 +195,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   <img
                     src={`${spritePath}/${character.sprite}`}
                     alt={"Player"}
-                    className="equipment-img mb-2"
+                    className={`equipment-img mb-2 transition-filter duration-200 ${
+                      playerDamage !== null ? "red-hit" : ""
+                    }`}
                     width={32}
                     height={32}
                   />
@@ -246,7 +245,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                 <img
                   src={`${spritePath}/${currentEnemy.sprite}`}
                   alt={currentEnemy.name}
-                  className="equipment-img mb-2"
+                  className={`equipment-img mb-2 transition-filter duration-200 ${
+                    enemyDamage !== null ? "red-hit" : ""
+                  }`}
                   width={32}
                   height={32}
                 />
@@ -263,8 +264,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       </div>
       {/* Pause / Resume button */}
       <button
-        className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
-        onClick={() => handleButtonClick()}
+        className="mt-4 px-8 py-3 rounded-lg shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+        onClick={() => handleButtonClick()
+        }
       >
         {isDead ? "Restart Combat" : isPaused ? "Start Combat" : "Pause Combat"}
       </button>

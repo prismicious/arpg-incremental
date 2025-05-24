@@ -33,6 +33,12 @@ export function calculateEffectiveStats(character: Character): Stats {
       effective.dexterity += item.dexterity || 0;
       effective.intelligence += item.intelligence || 0;
     }
+
+    // Attribute bonuses
+    effective.damage += character.stats.strength;
+    effective.attackSpeed += character.stats.dexterity * 0.01; 
+    effective.health += character.stats.strength * 5; // Assuming 5 health per strength
+    effective.mana += character.stats.intelligence * 5; // Assuming 5 mana per intelligence 
   }
 
   const eq = character.equipment;

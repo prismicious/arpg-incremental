@@ -23,19 +23,12 @@ icon-helmet-iron {
   display: inline-block;
   object-fit: contain;
   margin-bottom: 0.25rem; /* same as mb-1 */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
-@keyframes damage-float {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -24px);
-  }
-}
-
-.animate-damage-float {
-  animation: damage-float 0.7s ease-out;
+.red-hit {
+  /* This filter tints the sprite red. */
+  filter: grayscale(1) brightness(0.7) sepia(1) hue-rotate(-50deg) saturate(6) contrast(2);
+  transition: filter 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }

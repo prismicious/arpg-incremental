@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+body {
+  background-image: url('/assets/bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* Add blur and dark overlay */
+  backdrop-filter: blur(4px);
+  background: rgba(21, 21, 24, 0.868);
+  pointer-events: none;
+}
+
+/* Remove overlay and background from #root and .min-h-screen */
+#root, .min-h-screen {
+  background: none !important;
+  position: relative;
+  z-index: 1;
+}

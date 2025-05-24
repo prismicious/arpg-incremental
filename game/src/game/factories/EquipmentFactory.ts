@@ -26,7 +26,7 @@ export function createWeapon(
   const { damage, attackSpeed } = WeaponStats(weaponType, tier, level);
   const mapping = `${tier}_${weaponType}`;
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-  const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
+  const sprite = tileIndex !== undefined ? `${tileIndex}.png` : "missing.png";
   return {
     type: "weapon",
     id: generateUniqueId(`${weaponType}`),
@@ -48,7 +48,7 @@ export function createArmor<T extends keyof ArmorTypeMapping>(
   const { armor, health } = ArmorStats(armorType, tier, level);
   const mapping = `${tier}_${armorType}`;
   const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-  const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
+  const sprite = tileIndex !== undefined ? `${tileIndex}.png` : "missing.png";
   return {
     tier,
     type: "armor",
@@ -65,7 +65,7 @@ export function createTrinket<T extends keyof TrinketTypeMapping>(
     const { strength, dexterity, intelligence } = TrinketStats(trinketType, tier, level);
     const mapping = `${tier}_${trinketType}`;
     const tileIndex = getKeyByValue(spriteTileToNameMap, mapping);
-    const sprite = tileIndex !== undefined ? `_${tileIndex}.png` : "missing.png";
+    const sprite = tileIndex !== undefined ? `${tileIndex}.png` : "missing.png";
     return {
       type: "trinket",
       id: generateUniqueId(`${trinketType}`),

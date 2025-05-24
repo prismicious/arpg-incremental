@@ -133,7 +133,7 @@ export const CharacterBox: React.FC<CharacterBoxProps> = ({
           <div>Health: {effectiveStats.health}</div>
           <div>Mana: {effectiveStats.mana}</div>
           <div>Damage: {effectiveStats.damage}</div>
-          <div>Attack Speed: {effectiveStats.attackSpeed}</div>
+          <div>Attack Speed: {effectiveStats.attackSpeed.toFixed(2)}</div>
           <div>Armor: {effectiveStats.armor}</div>
           <div>Strength: {effectiveStats.strength}</div>
           <div>Dexterity: {effectiveStats.dexterity}</div>
