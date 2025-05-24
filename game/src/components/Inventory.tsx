@@ -1,6 +1,7 @@
 import React, { useState, type JSX } from "react";
 import { equipItem } from "../game/utils/equipItem";
 import type { Character } from "../types/models/character-class";
+import { capitalize } from "../game/util";
 
 interface InventoryProps {
   character: Character;
@@ -18,14 +19,15 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Tooltip: React.FC<{ item: any; children: React.ReactNode }> = ({ item, children }) => {
       const [visible, setVisible] = useState(false);
+      const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
       // Helper to render stats in "+X stat" format
       const renderStats = () => {
         if (!item) return null;
         const stats: JSX.Element[] = [];
         if (item.type === "weapon") {
-          if (item.damage) stats.push(<div key="damage">{`+${item.damage} damage`}</div>);
-          if (item.attackSpeed) stats.push(<div key="attackSpeed">{`+${item.attackSpeed} attack speed`}</div>);
+          if (item.damage) stats.push(<div key="damage">{`${item.damage} damage`}</div>);
+          if (item.attackSpeed) stats.push(<div key="attackSpeed">{`+${item.attackSpeed.toFixed(2)} attack speed`}</div>);
         }
         if (item.type === "armor") {
           if (item.armor) stats.push(<div key="armor">{`+${item.armor} armor`}</div>);
@@ -43,8 +45,20 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
       };
 
       // Compose label as "{tier} {name}" or "{tier} {slot}" (no "Tier:" line)
-      const label = `${item.tier ? item.tier : ""} ${item.name || item.slot || item.type}`.trim();
-
+      let itemName = item.name;
+      if (item.weaponType && item.tier) {
+        itemName = `${capitalize(item.tier)} ${capitalize(item.weaponType)}`;
+      } else {
+        const tierStr = item.tier ? capitalize(item.tier) : "";
+        if (item.slot) {
+          itemName = tierStr ? `${tierStr} ${capitalize(item.slot)}` : capitalize(item.slot);
+        } else if (item.name) {
+          itemName = tierStr ? `${tierStr} ${capitalize(item.name)}` : capitalize(item.name);
+        } else {
+          itemName = tierStr;
+        }
+      }
+      const label = itemName
       // Color map for tiers
       const tierColor: Record<string, string> = {
         wood: "text-white",
@@ -56,16 +70,28 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
       // Get color class for current tier, fallback to white
       const labelColor = tierColor[item.tier?.toString().toLowerCase()] || "text-white";
 
+      // Mouse move handler to update tooltip position
+      const handleMouseMove = (e: React.MouseEvent) => {
+        setPos({ x: e.clientX, y: e.clientY });
+      };
+
       return (
         <div
           className="relative inline-block"
           onMouseEnter={() => setVisible(true)}
           onMouseLeave={() => setVisible(false)}
+          onMouseMove={handleMouseMove}
         >
           {children}
           {visible && item && (
-            <div className="absolute z-50 left-1/2 -translate-x-1/2 top-full mt-2 min-w-[180px] bg-zinc-900/95 text-white text-xs rounded-lg shadow-xl border border-amber-400 px-4 py-3 pointer-events-none"
-                 style={{ whiteSpace: "nowrap" }}>
+            <div
+              className="fixed z-[9999] min-w-[180px] bg-zinc-900/95 text-white text-xs rounded-lg shadow-xl border border-amber-400 px-4 py-3 pointer-events-none"
+              style={{
+                whiteSpace: "nowrap",
+                left: pos.x + 12,
+                top: pos.y + 12,
+              }}
+            >
               <div className={`font-bold mb-1 ${labelColor}`}>{label}</div>
               {renderStats()}
             </div>
@@ -75,18 +101,35 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
     };
 
     return (
-        <div className="inventory">
+        <div className="inventory border border-gray-500 rounded-xl p-4 flex flex-col items-center justify-center">
         <h2>Inventory</h2>
-        <div className="inventory-grid grid grid-cols-4 gap-4">
+        <div
+          className="inventory-grid grid grid-cols-8 gap-3"
+          style={{
+            justifyItems: "center",
+            alignItems: "center",
+            maxHeight: "320px",
+            overflowY: "auto",
+          }}
+        >
             {/* Map through the inventory items and display them */}
             {character.inventory.map((item, index) => (
-            <div key={index} className="inventory-item border-2 border-black rounded p-2" onClick={() => equipItem(item, character, setCharacter)}>
+            <div
+              key={index}
+              className="inventory-item border-2 border-black rounded flex items-center justify-center p-1 bg-zinc-800"
+              style={{ width: 40, height: 40 }}
+              onClick={() => equipItem(item, character, setCharacter)}
+            >
                 <Tooltip item={item}>
-                  <img src={`${spritePath}/${item.sprite}`} alt={`${item.tier} ${item.type}`} />
+                  <img
+                    src={`${spritePath}/${item.sprite}`}
+                    alt={`${item.tier} ${item.type}`}
+                    className="equipment-img"
+                    style={{ width: 32, height: 32 }}
+                  />
                 </Tooltip>
             </div>
             ))}
-            
         </div>
         </div>
     );

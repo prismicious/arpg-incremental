@@ -9,9 +9,7 @@ import { AllEnemyWaves } from "../types/models/all-enemy-waves-class";
 import { EnemyWaveManager } from "../types/models/enemy-wave-manager";
 import { goblinPrefab, orcPrefab, slimePrefab } from "../game/prefabs/prefabs";
 import {
-  createWeapon,
-  createArmor,
-  createTrinket,
+  createAllWeapons,
 } from "../game/factories/EquipmentFactory";
 
 // Import new components
@@ -30,13 +28,9 @@ const wave1 = createEnemyWave([
 const allEnemyWaves = new AllEnemyWaves();
 allEnemyWaves.addWave(wave1);
 
-const exampleInventory: InventoryItemUnion[] = [
-  createWeapon("dagger", 1, "iron"),
-  createArmor("helmet", 1, "diamond"),
-  createTrinket("ring", 1, "wood"),
-  createTrinket("ring", 1, "wood"),
-  createTrinket("amulet", 1, "wood"),
-];
+const weapons = createAllWeapons();
+
+const exampleInventory: InventoryItemUnion[] = weapons
 
 const enemyWaveManager = new EnemyWaveManager(allEnemyWaves);
 

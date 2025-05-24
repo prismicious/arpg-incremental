@@ -26,7 +26,6 @@ const TierMultiplier = {
     iron: { armor: 1.2, health: 1.05 },
     diamond: { armor: 1.5, health: 1.1 },
     gold: { armor: 2, health: 1.15 },
-    crimson: { armor: 2.5, health: 1.2 },
     none: { armor: 0, health: 0 },
 }
 

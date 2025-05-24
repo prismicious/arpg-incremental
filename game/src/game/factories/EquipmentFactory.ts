@@ -40,6 +40,16 @@ export function createWeapon(
   };
 }
 
+export function createAllWeapons() {
+  const weapons: Weapon[] = [];
+  for (const weaponType of Object.values(WeaponTypes)) {
+    for (const tier of Object.values(TiersEnum)) {
+        weapons.push(createWeapon(weaponType, 1, tier));
+    }
+  }
+  return weapons;
+}
+
 export function createArmor<T extends keyof ArmorTypeMapping>(
   armorType: T,
   level: number,

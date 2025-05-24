@@ -8,7 +8,6 @@ export const TiersEnum = {
   iron: "iron",
   diamond: "diamond",
   gold: "gold",
-  crimson: "crimson",
   none: "none",
 } as const;
 

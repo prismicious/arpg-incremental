@@ -39,7 +39,6 @@ const TierMultiplier = {
   iron: { damage: 1.2, attackSpeed: 1.05 },
   diamond: { damage: 10, attackSpeed: 1.1 },
   gold: { damage: 2, attackSpeed: 1.15 },
-  crimson: { damage: 2.5, attackSpeed: 1.2 },
   none: { damage: 0, attackSpeed: 0 },
 };
 

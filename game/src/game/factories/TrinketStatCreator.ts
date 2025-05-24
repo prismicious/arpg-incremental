@@ -32,7 +32,6 @@ const TierMultiplier = {
     iron: 1.5,
     diamond: 2,
     gold: 2.5,
-    crimson: 3,
     none: 0,
 }
 

@@ -9,7 +9,7 @@ export const spriteTileToNameMap = {
   109: "wood_boots",
   110: "iron_boots",
   517: "diamond_boots",
-  507: "gold_boots",
+  504: "gold_boots",
 
   // Bows
   4: "wood_bow",
@@ -52,4 +52,10 @@ export const spriteTileToNameMap = {
   6: "iron_dagger",
   38: "diamond_dagger",
   54: "gold_dagger",
+
+  // Axes
+  1: "wood_axe",
+  7: "iron_axe",
+  33: "diamond_axe",
+  507: "gold_axe",
 };
