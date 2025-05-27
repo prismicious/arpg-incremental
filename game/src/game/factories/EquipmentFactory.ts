@@ -1,4 +1,8 @@
-import { TiersEnum, WeaponTypes } from "../../types/interfaces/enums";
+import {
+  armorTypeKeys,
+  TiersEnum,
+  WeaponTypes,
+} from "../../types/interfaces/enums";
 import type {
   ArmorTypeMapping,
   TrinketTypeMapping,
@@ -7,7 +11,11 @@ import { WeaponStats } from "./WeaponStatCreator";
 import { ArmorStats } from "./ArmorStatCreator";
 import { TrinketStats } from "./TrinketStatCreator";
 import { generateUniqueId } from "../utils/generateUniqueId";
-import type { Weapon, Potion } from "../../types/interfaces/inventory-item";
+import type {
+  Weapon,
+  Potion,
+  Armor,
+} from "../../types/interfaces/inventory-item";
 import { spriteTileToNameMap } from "../spriteMap";
 
 // Helper
@@ -69,6 +77,17 @@ export function createArmor<T extends keyof ArmorTypeMapping>(
     health,
     sprite,
   } as ArmorTypeMapping[T];
+}
+
+export function createAllArmors() {
+  const armors: Armor[] = [];
+  for (const armorType of armorTypeKeys) {
+    for (const tier of Object.values(TiersEnum)) {
+      if (tier === TiersEnum.none) continue;
+      armors.push(createArmor(armorType, 1, tier));
+    }
+  }
+  return armors;
 }
 
 export function createTrinket<T extends keyof TrinketTypeMapping>(
