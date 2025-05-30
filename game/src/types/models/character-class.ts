@@ -45,7 +45,8 @@ export class Character implements ICharacter {
     this.experience += amount;
     this.totalExperience += amount;
     this.distributeLoot(loot);
-    if (this.checkLevelUpThreshold()) {
+    while (this.checkLevelUpThreshold()) {
+      this.experience -= this.getExperienceToNextLevel();
       this.levelUp();
     }
   }

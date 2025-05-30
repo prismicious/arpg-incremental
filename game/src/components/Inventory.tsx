@@ -1,7 +1,7 @@
 import React, { useState, type JSX } from "react";
 import { equipItem } from "../game/utils/equipItem";
 import type { Character } from "../types/models/character-class";
-import { capitalize } from "../game/util";
+import { capitalize, getItemBorderColorClass } from "../game/util";
 
 interface InventoryProps {
   character: Character;
@@ -101,35 +101,37 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
     };
 
     return (
-        <div className="inventory border border-gray-500 rounded-xl p-4 flex flex-col items-center justify-center">
-        <h2>Inventory</h2>
+        <div className="inventory border border-gray-500 rounded-xl p-2 flex flex-col items-center justify-center text-xs bg-zinc-900">
         <div
-          className="inventory-grid grid grid-cols-8 gap-3"
+          className="inventory-grid grid grid-cols-8 gap-2"
           style={{
             justifyItems: "center",
             alignItems: "center",
-            maxHeight: "320px",
+            maxHeight: "260px",
             overflowY: "auto",
           }}
         >
             {/* Map through the inventory items and display them */}
-            {character.inventory.map((item, index) => (
-            <div
-              key={index}
-              className="inventory-item border-2 border-black rounded flex items-center justify-center p-1 bg-zinc-800"
-              style={{ width: 40, height: 40 }}
-              onClick={() => equipItem(item, character, setCharacter)}
-            >
-                <Tooltip item={item}>
-                  <img
-                    src={`${spritePath}/${item.sprite}`}
-                    alt={`${item.tier} ${item.type}`}
-                    className="equipment-img"
-                    style={{ width: 32, height: 32 }}
-                  />
-                </Tooltip>
-            </div>
-            ))}
+            {character.inventory.map((item, index) => {
+              const borderColor = getItemBorderColorClass(item.tier);
+              return (
+                <div
+                  key={index}
+                  className={`inventory-item border ${borderColor} rounded flex items-center justify-center p-0.5 bg-zinc-800`}
+                  style={{ width: 36, height: 36 }}
+                  onClick={() => equipItem(item, character, setCharacter)}
+                >
+                  <Tooltip item={item}>
+                    <img
+                      src={`${spritePath}/${item.sprite}`}
+                      alt={`${item.tier} ${item.type}`}
+                      className="equipment-img"
+                      style={{ width: 28, height: 28 }}
+                    />
+                  </Tooltip>
+                </div>
+              );
+            })}
         </div>
         </div>
     );

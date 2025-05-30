@@ -3,6 +3,7 @@ import { reducer, initialState } from "../game/reducers";
 import type { EnemyWave } from "../types/models/enemy-wave-class";
 import { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
+import "./CombatBox.css"; // Ensure CSS is imported
 
 interface CombatBoxProps {
   character: Character;
@@ -39,6 +40,10 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     null
   );
   const enemyDamageTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Level up glow effect state
+  const [expGlow, setExpGlow] = useState(false);
+  const prevLevel = useRef(character.level);
 
   useEffect(() => {
     // Initialize combat state
@@ -139,6 +144,14 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     currentHealth,
   ]);
 
+  useEffect(() => {
+    if (character.level > prevLevel.current) {
+      setExpGlow(true);
+      prevLevel.current = character.level;
+      setTimeout(() => setExpGlow(false), 900);
+    }
+  }, [character.level]);
+
   const handleButtonClick = () => {
     if (isDead) {
       // Restart combat
@@ -153,123 +166,171 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   };
 
   return (
-    <div className="bg-zinc-900/80 rounded-2xl shadow-2xl p-10 flex flex-col items-center border border-gray-700 max-w-xl w-full">
-      <h2 className="text-xl font-semibold mb-2 tracking-wide">Combat</h2>
-      {/* Enemy Counter */}
-      <div className="mb-2 text-sm text-gray-300">
-        Enemy {enemyIndex + 1} / {enemyCount}
+    <div className="bg-zinc-900/80 rounded-2xl shadow-2xl p-10 flex flex-col items-center border border-gray-800 max-w-xl w-lg relative">
+      {/* EXP Bar at the very top, embedded into the box */}
+      <div className="absolute left-0 top-0 w-full">
+        <div
+          className={
+            "w-full h-8 bg-gray-700 rounded-t-2xl overflow-hidden relative" +
+            (expGlow ? " ring-4 ring-violet-300/60 ring-offset-0 animate-pulse" : "")
+          }
+        >
+          {/* XP Bar gradient (no animation/particles) */}
+          <div
+            className="h-8"
+            style={{
+              width: `${Math.min(
+                100,
+                (character.experience / character.getExperienceToNextLevel()) * 100
+              )}%`,
+              transition: "width 0.3s",
+              position: "relative",
+              zIndex: 1,
+              background: "linear-gradient(to right, #3b185f, #6d28d9)",
+              boxShadow: expGlow
+                ? "0 0 24px 8px #a78bfa, 0 0 48px 16px #f0abfc"
+                : undefined,
+              filter: "contrast(1.25) brightness(1.1)",
+            }}
+          />
+          {/* Subtle noise overlay */}
+          <div
+            className="xpbar-noise-overlay"
+          />
+          <div
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold"
+            style={{
+              color: "rgba(255,255,255,0.7)",
+              textShadow: "0 1px 4px rgba(0,0,0,0.25)",
+              mixBlendMode: "screen",
+              background: "rgba(0,0,0,0.08)",
+              borderRadius: "0.25rem",
+              padding: "0.1rem 0.5rem",
+              zIndex: 4,
+            }}
+          >
+            {character.experience} / {character.getExperienceToNextLevel()} (Level {character.level})
+          </div>
+        </div>
       </div>
-      <div className="flex flex-row gap-20 p-5">
-        {/* Character Details */}
-        <div className="flex flex-col items-center">
-          {character && effectiveStats ? (
-            <>
-              {/* Health Numbers Above Bar */}
-              <div className="mb-0.5 text-xs text-white font-bold">
-                {Math.floor(currentHealth)} /{" "}
-                {Math.floor(effectiveStats.health)}
-              </div>
-              {/* Thin Health Bar */}
-              <div className="w-24 h-1 bg-gray-700 rounded mb-1 relative">
-                <div
-                  className="h-1 bg-green-500 rounded"
-                  style={{
-                    width: `${Math.max(
-                      0,
-                      (currentHealth / effectiveStats.health) * 100
-                    )}%`,
-                    transition: "width 0.3s",
-                  }}
-                />
-                {/* Player Damage Number */}
-                {playerDamage !== null && (
-                  <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-red-300 text-xs font-bold pointer-events-none select-none animate-damage-float">
-                    {playerDamage}
-                  </span>
+      {/* Remove top padding from combat content */}
+      <div className="w-full flex flex-col items-center">
+        <h2 className="text-xl font-semibold mb-1 tracking-wide">Combat</h2>
+        {/* Enemy Counter */}
+        <div className="mb-2 text-sm text-gray-300">
+          Enemy {enemyIndex + 1} / {enemyCount}
+        </div>
+        <div className="flex flex-row gap-20 p-5">
+          {/* Character Details */}
+          <div className="flex flex-col items-center">
+            {character && effectiveStats ? (
+              <>
+                {/* Health Numbers Above Bar */}
+                <div className="mb-0.5 text-xs text-white font-bold">
+                  {Math.floor(currentHealth)} /{" "}
+                  {Math.floor(effectiveStats.health)}
+                </div>
+                {/* Thin Health Bar */}
+                <div className="w-24 h-1 bg-gray-700 rounded mb-1 relative">
+                  <div
+                    className="h-1 bg-green-500 rounded"
+                    style={{
+                      width: `${Math.max(
+                        0,
+                        (currentHealth / effectiveStats.health) * 100
+                      )}%`,
+                      transition: "width 0.3s",
+                    }}
+                  />
+                  {/* Player Damage Number */}
+                  {playerDamage !== null && (
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-red-300 text-xs font-bold pointer-events-none select-none animate-damage-float">
+                      {playerDamage}
+                    </span>
+                  )}
+                </div>
+                {isDead ? (
+                  "Dead"
+                ) : (
+                  <div className="flex justify-center">
+                    <img
+                      src={`${spritePath}/${character.sprite}`}
+                      alt={"Player"}
+                      className={`equipment-img mb-2 transition-filter duration-200 ${
+                        playerDamage !== null ? "red-hit" : ""
+                      }`}
+                      width={32}
+                      height={32}
+                    />
+                  </div>
                 )}
-              </div>
-              {isDead ? (
-                "Dead"
-              ) : (
+                <div className="font-bold text-center">Player</div>
+                <div>Damage: {effectiveStats.damage}</div>
+                <div>Armor: {effectiveStats.armor}</div>
+                <div>Attack Speed: {effectiveStats.attackSpeed.toFixed(1)}</div>
+              </>
+            ) : (
+              <div>No character!</div>
+            )}
+          </div>
+
+          <div className="flex flex-col items-center">
+            {/* Enemy Details */}
+            {currentEnemy ? (
+              <>
+                {/* Health Numbers Above Bar */}
+                <div className="mb-0.5 text-xs text-white font-bold">
+                  {Math.floor(currentEnemyHealth)} /{" "}
+                  {Math.floor(currentEnemy.health)}
+                </div>
+                {/* Thin Health Bar */}
+                <div className="w-32 h-1 bg-gray-700 rounded mb-1 relative">
+                  <div
+                    className="h-1 bg-red-500 rounded"
+                    style={{
+                      width: `${Math.max(
+                        0,
+                        (currentEnemyHealth / currentEnemy.health) * 100
+                      )}%`,
+                      transition: "width 0.3s",
+                    }}
+                  />
+                  {/* Enemy Damage Number */}
+                  {enemyDamage !== null && (
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-yellow-200 text-xs font-bold pointer-events-none select-none animate-damage-float">
+                      {enemyDamage}
+                    </span>
+                  )}
+                </div>
                 <div className="flex justify-center">
                   <img
-                    src={`${spritePath}/${character.sprite}`}
-                    alt={"Player"}
+                    src={`${spritePath}/${currentEnemy.sprite}`}
+                    alt={currentEnemy.name}
                     className={`equipment-img mb-2 transition-filter duration-200 ${
-                      playerDamage !== null ? "red-hit" : ""
+                      enemyDamage !== null ? "red-hit" : ""
                     }`}
                     width={32}
                     height={32}
                   />
                 </div>
-              )}
-              <div className="font-bold text-center">Player</div>
-              <div>Damage: {effectiveStats.damage}</div>
-              <div>Armor: {effectiveStats.armor}</div>
-              <div>Attack Speed: {effectiveStats.attackSpeed.toFixed(1)}</div>
-            </>
-          ) : (
-            <div>No character!</div>
-          )}
+                <div className="font-bold text-center">{currentEnemy.name}</div>
+                <div>Damage: {currentEnemy.damage}</div>
+                <div>Armor: {currentEnemy.armor}</div>
+                <div>Attack Speed: {currentEnemy.attackSpeed.toFixed(1)}</div>
+              </>
+            ) : (
+              <div>No enemy!</div>
+            )}
+          </div>
         </div>
-
-        <div className="flex flex-col items-center">
-          {/* Enemy Details */}
-          {currentEnemy ? (
-            <>
-              {/* Health Numbers Above Bar */}
-              <div className="mb-0.5 text-xs text-white font-bold">
-                {Math.floor(currentEnemyHealth)} /{" "}
-                {Math.floor(currentEnemy.health)}
-              </div>
-              {/* Thin Health Bar */}
-              <div className="w-32 h-1 bg-gray-700 rounded mb-1 relative">
-                <div
-                  className="h-1 bg-red-500 rounded"
-                  style={{
-                    width: `${Math.max(
-                      0,
-                      (currentEnemyHealth / currentEnemy.health) * 100
-                    )}%`,
-                    transition: "width 0.3s",
-                  }}
-                />
-                {/* Enemy Damage Number */}
-                {enemyDamage !== null && (
-                  <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-yellow-200 text-xs font-bold pointer-events-none select-none animate-damage-float">
-                    {enemyDamage}
-                  </span>
-                )}
-              </div>
-              <div className="flex justify-center">
-                <img
-                  src={`${spritePath}/${currentEnemy.sprite}`}
-                  alt={currentEnemy.name}
-                  className={`equipment-img mb-2 transition-filter duration-200 ${
-                    enemyDamage !== null ? "red-hit" : ""
-                  }`}
-                  width={32}
-                  height={32}
-                />
-              </div>
-              <div className="font-bold text-center">{currentEnemy.name}</div>
-              <div>Damage: {currentEnemy.damage}</div>
-              <div>Armor: {currentEnemy.armor}</div>
-              <div>Attack Speed: {currentEnemy.attackSpeed.toFixed(1)}</div>
-            </>
-          ) : (
-            <div>No enemy!</div>
-          )}
-        </div>
+        {/* Pause / Resume button */}
+        <button
+          className="mt-2 px-8 py-3 rounded shadow bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-800 hover:to-gray-700 text-gray-200 font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 border border-gray-600"
+          onClick={() => handleButtonClick()}
+        >
+          {isDead ? "Restart Combat" : isPaused ? "Start Combat" : "Pause Combat"}
+        </button>
       </div>
-      {/* Pause / Resume button */}
-      <button
-        className="mt-4 px-8 py-3 rounded-lg shadow-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
-        onClick={() => handleButtonClick()
-        }
-      >
-        {isDead ? "Restart Combat" : isPaused ? "Start Combat" : "Pause Combat"}
-      </button>
     </div>
   );
 };

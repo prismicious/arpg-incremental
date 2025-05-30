@@ -17,6 +17,7 @@ import type {
   Armor,
 } from "../../types/interfaces/inventory-item";
 import { spriteTileToNameMap } from "../spriteMap";
+import type { InventoryItemUnion } from "../../types/interfaces/character";
 
 // Helper
 function getKeyByValue(
@@ -90,11 +91,32 @@ export function createAllArmors() {
   return armors;
 }
 
+export function createAllTrinkets() {
+  console.log("First trigger")
+  const trinkets: TrinketTypeMapping[keyof TrinketTypeMapping][] = [];
+  const trinketTypes: (keyof TrinketTypeMapping)[] = ["ring", "amulet"];
+  for (const trinketType of trinketTypes) {
+    for (const tier of Object.values(TiersEnum)) {
+      if (tier === TiersEnum.none) continue;
+      trinkets.push(createTrinket(trinketType, 1, tier));
+    }
+  }
+  return trinkets;
+}
+
+export function debugCreateAllItems(): InventoryItemUnion[] {
+  const weapons = createAllWeapons();
+  const armors = createAllArmors();
+  const trinkets = createAllTrinkets();
+  return [...weapons, ...armors, ...trinkets] as InventoryItemUnion[];
+}
+
 export function createTrinket<T extends keyof TrinketTypeMapping>(
   trinketType: T,
   level: number,
   tier: TiersEnum
 ): TrinketTypeMapping[T] {
+  console.log(`Creating trinket: ${trinketType}, Level: ${level}, Tier: ${tier}`);
   const { strength, dexterity, intelligence } = TrinketStats(
     trinketType,
     tier,

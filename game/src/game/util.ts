@@ -56,3 +56,18 @@ export const capitalize = (word: string): string => {
   if (!word) return "";
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
+
+export function getItemBorderColorClass(tier: string | undefined): string {
+  switch (tier) {
+    case "iron":
+      return "border-green-600";
+    case "gold":
+      return "border-yellow-200";
+    case "diamond":
+      return "border-blue-300";
+    case "wood":
+      return "border-white";
+    default:
+      return "border-black";
+  }
+}

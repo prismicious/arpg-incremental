@@ -32,8 +32,8 @@ export const spriteTileToNameMap = {
   // Rings
   508: "wood_ring",
   98: "iron_ring",
-  99: "diamond_ring",
-  509: "gold_ring",
+  509: "diamond_ring",
+  99: "gold_ring",
 
   // Staffs
   5: "wood_staff",

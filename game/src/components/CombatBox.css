@@ -1,0 +1,49 @@
+/* XP bar floating particle animation */
+@keyframes xpbar-particle-float {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.7);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(1.1);
+  }
+}
+
+/* Subtle noise overlay for XP bar */
+.xpbar-noise-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0.4;
+  background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+  mix-blend-mode: overlay;
+}
+
+/* Add this for floating damage numbers */
+@keyframes damage-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-18px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scale(1.15);
+  }
+}
+
+.animate-damage-float {
+  animation: damage-float 2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
