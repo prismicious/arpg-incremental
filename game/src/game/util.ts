@@ -1,10 +1,10 @@
-import type { Character } from "../types/interfaces/character";
 import type {
   Weapon,
   Armor,
   Trinket,
 } from "../types/interfaces/inventory-item";
 import type { Stats } from "../types/interfaces/stats";
+import { Character } from "../types/models/character-class";
 
 export interface EquipmentTypeMapping {
   weapon: Weapon;
@@ -13,7 +13,7 @@ export interface EquipmentTypeMapping {
 }
 
 export function calculateEffectiveStats(character: Character): Stats {
-  const effective: Stats = { ...character.Stats };
+  const effective: Stats = { ...character.stats };
 
   function applyItemStats<T extends keyof EquipmentTypeMapping>(
     item: EquipmentTypeMapping[T] | null

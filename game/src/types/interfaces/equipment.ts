@@ -14,5 +14,4 @@ export interface Equipment {
   ring2: Ring | null;
   amulet: Amulet | null;
   potion: Potion | null;
-  spells: Spell[];
 }
