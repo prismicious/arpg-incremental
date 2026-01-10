@@ -1,5 +1,6 @@
 import React from "react";
-import type { Character } from "../types/models/character-class";
+import { Character } from "../types/models/character-class";
+import type { Equipment } from "../types/interfaces/equipment";
 import type { Stats } from "../types/interfaces/stats";
 import { calculateEffectiveStats, getItemBorderColorClass } from "../game/util";
 import { Inventory } from "./Inventory";
@@ -68,7 +69,7 @@ const Tooltip: React.FC<{ item: any; children: React.ReactNode }> = ({ item, chi
       {children}
       {visible && item && (
         <div
-          className="fixed z-[9999] min-w-[180px] bg-zinc-900/95 text-white text-xs rounded-lg shadow-xl border border-amber-400 px-4 py-3 pointer-events-none"
+          className="game-tooltip fixed z-[9999] min-w-[180px] text-white text-xs px-4 py-3 pointer-events-none"
           style={{
             whiteSpace: "nowrap",
             left: pos.x + 12,
@@ -103,12 +104,12 @@ export const CharacterBox: React.FC<{
   }, [character, setEffectiveStats]);
 
   // Helper to unequip an item from a slot
-  const handleUnequip = (slot: string) => {
+  const handleUnequip = (slot: keyof Equipment) => {
     setCharacter((prev) => {
       const prevEquipped = prev.equipment[slot];
       if (!prevEquipped) return prev;
       // Remove from equipment, add to inventory
-      return new (prev.constructor as typeof Character)(
+      return new Character(
         prev.stats,
         [...prev.inventory, prevEquipped],
         { ...prev.equipment, [slot]: null },
@@ -118,17 +119,17 @@ export const CharacterBox: React.FC<{
   };
 
   return (
-    <div className="flex flex-col items-center max-w-md w-full mx-auto mt-2 rounded-lg shadow">
+    <div className="game-panel flex flex-col items-center max-w-md w-full mx-auto mt-2 p-4">
       <h2 className="text-xl font-semibold mb-2 text-gray-100">Character</h2>
       <div className="flex flex-row flex-wrap gap-2 justify-center items-end w-full mb-2">
         {/* Helmet */}
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.helmet}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.helmet?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("helmet")}
               title={character.equipment.helmet ? "Unequip Helmet" : ""}
             >
@@ -148,10 +149,10 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.amulet}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.amulet?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("amulet")}
               title={character.equipment.amulet ? "Unequip Amulet" : ""}
             >
@@ -171,10 +172,10 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.ring1}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.ring1?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("ring1")}
               title={character.equipment.ring1 ? "Unequip Ring 1" : ""}
             >
@@ -194,10 +195,10 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.ring2}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.ring2?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("ring2")}
               title={character.equipment.ring2 ? "Unequip Ring 2" : ""}
             >
@@ -217,10 +218,10 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.chest}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.chest?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("chest")}
               title={character.equipment.chest ? "Unequip Chestplate" : ""}
             >
@@ -240,10 +241,10 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-col items-center">
           <Tooltip item={character.equipment.weapon}>
             <div
-              className={`border-2 rounded flex items-center justify-center p-1 bg-zinc-800 cursor-pointer ${
+              className={`item-slot flex items-center justify-center p-1 cursor-pointer ${
                 getItemBorderColorClass(character.equipment.weapon?.tier)
               }`}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 44, height: 44 }}
               onClick={() => handleUnequip("weapon")}
               title={character.equipment.weapon ? "Unequip Weapon" : ""}
             >
