@@ -37,9 +37,7 @@ export class Character implements ICharacter {
     this.gold = 0;
   }
 
-  // TODO: Fix this mess
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleFightEnd(amount: number, loot: any): void {
+  handleFightEnd(amount: number, loot: InventoryItemUnion[]): void {
     console.log("Combat ended, gained experience:", amount);
     console.log("Loot received:", loot);
     this.experience += amount;
@@ -51,8 +49,7 @@ export class Character implements ICharacter {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  distributeLoot(loot: any): void {
+  distributeLoot(loot: InventoryItemUnion[]): void {
     console.log("Pushing loot to inventory", loot);
     this.inventory.push(...loot);
   }
