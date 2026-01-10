@@ -2,6 +2,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
 @import "tailwindcss";
 
+/* ============================================
+   Design Tokens (CSS Custom Properties)
+   ============================================ */
+:root {
+  --panel-bg: rgba(15, 12, 10, 0.85);
+  --panel-bg-light: rgba(25, 22, 18, 0.9);
+  --panel-border: rgba(180, 140, 80, 0.3);
+  --panel-border-hover: rgba(200, 160, 100, 0.5);
+  --accent-gold: #d4a84b;
+  --accent-gold-dim: rgba(212, 168, 75, 0.3);
+  --accent-gold-glow: rgba(212, 168, 75, 0.15);
+  --health-player: #4ade80;
+  --health-player-glow: rgba(74, 222, 128, 0.4);
+  --health-enemy: #ef4444;
+  --health-enemy-glow: rgba(239, 68, 68, 0.4);
+  --xp-purple: #8b5cf6;
+  --xp-purple-dark: #3b185f;
+  --text-primary: #f5f5f4;
+  --text-secondary: #a8a29e;
+  --text-dim: #78716c;
+  --slot-bg: rgba(24, 24, 27, 0.8);
+  --slot-border: #3f3f46;
+}
+
 body {
   background-image: url('/assets/bg.png');
   background-size: cover;
@@ -10,6 +34,7 @@ body {
   min-height: 100vh;
   position: relative;
   font-family: 'Nunito', Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
 }
 
 body::before {
@@ -17,13 +42,11 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 0;
-  /* Add blur and dark overlay */
   backdrop-filter: blur(4px);
   background: rgba(21, 21, 24, 0.868);
   pointer-events: none;
 }
 
-/* Remove overlay and background from #root and .min-h-screen */
 #root, .min-h-screen {
   background: none !important;
   position: relative;
@@ -33,4 +56,142 @@ body::before {
 /* Use Amarante for all major titles and headings */
 h1, h2, h3, .font-title, .title, .text-title, .main-title {
   font-family: 'Amarante', cursive, Arial, Helvetica, sans-serif !important;
+}
+
+/* ============================================
+   Panel Styles
+   ============================================ */
+.game-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.game-panel-inner {
+  background: var(--panel-bg-light);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+}
+
+/* ============================================
+   Button Styles - Square & Pressable
+   ============================================ */
+.game-button {
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(180deg, #4a4540 0%, #2d2a26 100%);
+  border: 1px solid #5a5550;
+  border-bottom: 3px solid #1a1816;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: all 0.1s ease;
+  cursor: pointer;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-button:hover {
+  background: linear-gradient(180deg, #555048 0%, #38342f 100%);
+  border-color: #6a6560;
+}
+
+.game-button:active {
+  background: linear-gradient(180deg, #2d2a26 0%, #3a3632 100%);
+  border-bottom-width: 1px;
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon-only button (square) */
+.game-button-icon {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(180deg, #4a4540 0%, #2d2a26 100%);
+  border: 1px solid #5a5550;
+  border-bottom: 3px solid #1a1816;
+  color: var(--text-primary);
+  transition: all 0.1s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-button-icon:hover {
+  background: linear-gradient(180deg, #555048 0%, #38342f 100%);
+  border-color: #6a6560;
+}
+
+.game-button-icon:active {
+  background: linear-gradient(180deg, #2d2a26 0%, #3a3632 100%);
+  border-bottom-width: 1px;
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   Slot Styles (Equipment & Inventory)
+   ============================================ */
+.item-slot {
+  background: var(--slot-bg);
+  border: 2px solid var(--slot-border);
+  border-radius: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+.item-slot:hover {
+  border-color: var(--panel-border-hover);
+  box-shadow: 0 0 12px rgba(180, 140, 80, 0.2);
+}
+
+/* ============================================
+   Health Bar Styles
+   ============================================ */
+.health-bar-container {
+  background: #27272a;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.health-bar-fill-player {
+  background: linear-gradient(to right, #22c55e, #4ade80);
+  border-radius: 9999px;
+  box-shadow: 0 0 8px var(--health-player-glow);
+  transition: width 0.3s ease;
+}
+
+.health-bar-fill-enemy {
+  background: linear-gradient(to right, #dc2626, #ef4444);
+  border-radius: 9999px;
+  box-shadow: 0 0 8px var(--health-enemy-glow);
+  transition: width 0.3s ease;
+}
+
+/* ============================================
+   Tooltip Styles
+   ============================================ */
+.game-tooltip {
+  background: rgba(15, 12, 10, 0.95);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
 }

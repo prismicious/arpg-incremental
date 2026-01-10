@@ -85,7 +85,7 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
           {children}
           {visible && item && (
             <div
-              className="fixed z-[9999] min-w-[180px] bg-zinc-900/95 text-white text-xs rounded-lg shadow-xl border border-amber-400 px-4 py-3 pointer-events-none"
+              className="game-tooltip fixed z-[9999] min-w-[180px] text-white text-xs px-4 py-3 pointer-events-none"
               style={{
                 whiteSpace: "nowrap",
                 left: pos.x + 12,
@@ -101,7 +101,7 @@ export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, sp
     };
 
     return (
-        <div className="inventory border border-gray-500 rounded-xl p-2 flex flex-col items-center justify-center text-xs bg-zinc-900">
+        <div className="game-panel-inner rounded-lg p-3 flex flex-col items-center justify-center text-xs">
         <div
           className="inventory-grid grid grid-cols-8 gap-2"
           style={{

@@ -166,12 +166,12 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   };
 
   return (
-    <div className="bg-zinc-900/80 rounded-2xl shadow-2xl p-10 flex flex-col items-center border border-gray-800 max-w-xl w-lg relative">
+    <div className="game-panel rounded-xl p-10 flex flex-col items-center max-w-xl w-lg relative">
       {/* EXP Bar at the very top, embedded into the box */}
       <div className="absolute left-0 top-0 w-full">
         <div
           className={
-            "w-full h-8 bg-gray-700 rounded-t-2xl overflow-hidden relative" +
+            "w-full h-9 bg-zinc-800 rounded-t-xl border-b border-[rgba(180,140,80,0.2)] overflow-hidden relative" +
             (expGlow ? " ring-4 ring-violet-300/60 ring-offset-0 animate-pulse" : "")
           }
         >
@@ -231,9 +231,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   {Math.floor(effectiveStats.health)}
                 </div>
                 {/* Thin Health Bar */}
-                <div className="w-24 h-1 bg-gray-700 rounded mb-1 relative">
+                <div className="w-28 h-2.5 health-bar-container mb-1 relative">
                   <div
-                    className="h-1 bg-green-500 rounded"
+                    className="h-full health-bar-fill-player"
                     style={{
                       width: `${Math.max(
                         0,
@@ -284,9 +284,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   {Math.floor(currentEnemy.health)}
                 </div>
                 {/* Thin Health Bar */}
-                <div className="w-32 h-1 bg-gray-700 rounded mb-1 relative">
+                <div className="w-32 h-2.5 health-bar-container mb-1 relative">
                   <div
-                    className="h-1 bg-red-500 rounded"
+                    className="h-full health-bar-fill-enemy"
                     style={{
                       width: `${Math.max(
                         0,
@@ -325,7 +325,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         </div>
         {/* Pause / Resume button */}
         <button
-          className="mt-2 px-8 py-3 rounded shadow bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-800 hover:to-gray-700 text-gray-200 font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 border border-gray-600"
+          className="game-button mt-4"
           onClick={() => handleButtonClick()}
         >
           {isDead ? "Restart Combat" : isPaused ? "Start Combat" : "Pause Combat"}
