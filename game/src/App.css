@@ -1,29 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Amarante&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import "tailwindcss";
+
+/* PIXEL FONT TOGGLE - comment/uncomment to switch */
+/* Option A: Pixel font (VT323 - readable pixel font) */
+:root {
+  --font-main: 'VT323', monospace;
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+}
+/* Option B: Modern font (uncomment below, comment above to revert)
+:root {
+  --font-main: 'Nunito', Arial, Helvetica, sans-serif;
+  --font-size-base: 0.875rem;
+  --font-size-sm: 0.75rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.25rem;
+}
+*/
 
 /* ============================================
    Design Tokens (CSS Custom Properties)
    ============================================ */
 :root {
-  --panel-bg: rgba(15, 12, 10, 0.85);
-  --panel-bg-light: rgba(25, 22, 18, 0.9);
-  --panel-border: rgba(180, 140, 80, 0.3);
-  --panel-border-hover: rgba(200, 160, 100, 0.5);
-  --accent-gold: #d4a84b;
-  --accent-gold-dim: rgba(212, 168, 75, 0.3);
-  --accent-gold-glow: rgba(212, 168, 75, 0.15);
+  --panel-bg: rgba(12, 12, 14, 0.9);
+  --panel-bg-light: rgba(20, 20, 24, 0.9);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-border-hover: rgba(255, 255, 255, 0.15);
+  --accent-primary: #ffffff;
+  --accent-dim: rgba(255, 255, 255, 0.2);
+  --accent-glow: rgba(255, 255, 255, 0.1);
   --health-player: #4ade80;
   --health-player-glow: rgba(74, 222, 128, 0.4);
   --health-enemy: #ef4444;
   --health-enemy-glow: rgba(239, 68, 68, 0.4);
   --xp-purple: #8b5cf6;
   --xp-purple-dark: #3b185f;
-  --text-primary: #f5f5f4;
-  --text-secondary: #a8a29e;
-  --text-dim: #78716c;
-  --slot-bg: rgba(24, 24, 27, 0.8);
-  --slot-border: #3f3f46;
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-dim: #71717a;
+  --slot-bg: rgba(18, 18, 21, 0.9);
+  --slot-border: #27272a;
 }
 
 body {
@@ -33,8 +52,10 @@ body {
   background-position: center center;
   min-height: 100vh;
   position: relative;
-  font-family: 'Nunito', Arial, Helvetica, sans-serif;
+  font-family: var(--font-main);
+  font-size: var(--font-size-base);
   color: var(--text-primary);
+  line-height: 1.6;
 }
 
 body::before {
@@ -42,8 +63,8 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 0;
-  backdrop-filter: blur(2px);
-  background: rgba(21, 21, 24, 0.5);
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.75);
   pointer-events: none;
 }
 
@@ -53,9 +74,10 @@ body::before {
   z-index: 1;
 }
 
-/* Use Amarante for all major titles and headings */
+/* Headings use same font as body */
 h1, h2, h3, .font-title, .title, .text-title, .main-title {
-  font-family: 'Amarante', cursive, Arial, Helvetica, sans-serif !important;
+  font-family: var(--font-main);
+  letter-spacing: 0.05em;
 }
 
 /* ============================================
@@ -207,18 +229,14 @@ h1, h2, h3, .font-title, .title, .text-title, .main-title {
 
 .game-main-column {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--panel-bg);
-  border-left: 3px solid var(--panel-border);
-  border-right: 3px solid var(--panel-border);
   box-shadow:
-    inset 2px 0 0 rgba(255, 255, 255, 0.03),
-    inset -2px 0 0 rgba(0, 0, 0, 0.3),
-    4px 0 12px rgba(0, 0, 0, 0.5),
-    -4px 0 12px rgba(0, 0, 0, 0.5);
+    0 0 60px 20px rgba(0, 0, 0, 0.8),
+    0 0 120px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================================
@@ -230,8 +248,8 @@ h1, h2, h3, .font-title, .title, .text-title, .main-title {
   justify-content: space-between;
   padding: 0 1rem;
   height: 52px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 3px solid var(--panel-border);
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .header-tabs {
@@ -381,7 +399,7 @@ h1, h2, h3, .font-title, .title, .text-title, .main-title {
 
 .item-slot:hover {
   border-color: var(--panel-border-hover);
-  box-shadow: 0 0 12px rgba(180, 140, 80, 0.2);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
 }
 
 /* ============================================

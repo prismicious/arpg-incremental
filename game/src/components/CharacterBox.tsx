@@ -274,7 +274,7 @@ export const CharacterBox: React.FC<{
         </div>
         {/* Attribute allocation section */}
         {character.unallocAttrPts > 0 && (
-          <div className="mt-2 mb-1 text-center text-xs text-amber-400">
+          <div className="mt-2 mb-1 text-center text-xs text-violet-400">
             {character.unallocAttrPts} point{character.unallocAttrPts > 1 ? "s" : ""} to allocate!
           </div>
         )}
@@ -283,7 +283,7 @@ export const CharacterBox: React.FC<{
             <span>STR: {character.stats.strength}</span>
             {character.unallocAttrPts > 0 && (
               <button
-                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                className="w-5 h-5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded"
                 onClick={() => {
                   character.allocateAttribute("strength");
                   setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));
@@ -295,7 +295,7 @@ export const CharacterBox: React.FC<{
             <span>DEX: {character.stats.dexterity}</span>
             {character.unallocAttrPts > 0 && (
               <button
-                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                className="w-5 h-5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded"
                 onClick={() => {
                   character.allocateAttribute("dexterity");
                   setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));
@@ -307,7 +307,7 @@ export const CharacterBox: React.FC<{
             <span>INT: {character.stats.intelligence}</span>
             {character.unallocAttrPts > 0 && (
               <button
-                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                className="w-5 h-5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded"
                 onClick={() => {
                   character.allocateAttribute("intelligence");
                   setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));

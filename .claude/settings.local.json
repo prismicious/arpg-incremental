@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm pkg set:*)",
+      "Bash(npm run test:run:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(npm run build:*)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd //c \"taskkill /F /IM node.exe\")",
+      "Bash(perl -pi -e 's/import \\\\{ Character \\\\} from \"\\\\.\\\\.\\\\/types\\\\/models\\\\/character-class\";\\\\\\\\nimport type \\\\{ Equipment \\\\} from \"\\\\.\\\\.\\\\/types\\\\/interfaces\\\\/equipment\";/import { Character } from \"..\\\\/types\\\\/models\\\\/character-class\";\\\\nimport type { Equipment } from \"..\\\\/types\\\\/interfaces\\\\/equipment\";/':*)",
+      "Bash(python3:*)",
+      "Bash(node -e:*)",
+      "Bash(xxd:*)",
+      "Bash(dir /s \"C:\\\\Users\\\\Mikkel\\\\Desktop\\\\react-game\\\\game\\\\src\")",
+      "Bash(npm test)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git push:*)",
+      "Bash(timeout:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

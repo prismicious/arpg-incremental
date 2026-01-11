@@ -280,7 +280,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         <div className="absolute left-0 top-0 w-full">
         <div
           className={
-            "w-full h-9 bg-zinc-800 border-b-3 border-[rgba(180,140,80,0.3)] overflow-hidden relative" +
+            "w-full h-9 bg-zinc-900 border-b border-zinc-700/50 overflow-hidden relative" +
             (expGlow ? " ring-4 ring-violet-300/60 ring-offset-0 animate-pulse" : "")
           }
         >
@@ -323,24 +323,39 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         </div>
       </div>
       {/* Add top padding to account for absolute XP bar */}
-      <div className="w-full flex flex-col items-center pt-12">
-        <h2 className="text-xl font-semibold mb-1 tracking-wide">Combat</h2>
+      <div className="w-full flex flex-col items-center pt-14 flex-1">
         {/* Enemy Counter */}
-        <div className="mb-2 text-sm text-gray-300">
-          Enemy {enemyIndex + 1} / {enemyCount}
+        <div className="text-xs text-zinc-500 mb-4">
+          Wave {enemyIndex + 1} / {enemyCount}
         </div>
-        <div className="flex flex-row gap-20 p-5">
-          {/* Character Details */}
+        <div className="flex flex-row gap-24 items-center flex-1">
+          {/* Character */}
           <div className="flex flex-col items-center">
             {character && effectiveStats ? (
               <>
-                {/* Health Numbers Above Bar */}
-                <div className="mb-0.5 text-xs text-white font-bold">
-                  {Math.floor(currentHealth)} /{" "}
-                  {Math.floor(effectiveStats.health)}
-                </div>
-                {/* Thin Health Bar */}
-                <div className="w-28 h-2.5 health-bar-container mb-1 relative">
+                {isDead ? (
+                  <div className="text-red-500 font-bold text-2xl mb-4">DEAD</div>
+                ) : (
+                  <div className="flex justify-center relative">
+                    <img
+                      src={`${spritePath}/${character.sprite}`}
+                      alt={"Player"}
+                      className={`mb-3 transition-filter duration-200 ${
+                        playerDamage !== null ? "red-hit" : ""
+                      }`}
+                      style={{ width: 64, height: 64, imageRendering: "pixelated" }}
+                    />
+                    {/* Player Damage Number */}
+                    {playerDamage !== null && (
+                      <span className="absolute left-1/2 -translate-x-1/2 -top-4 text-red-400 text-sm font-bold pointer-events-none select-none animate-damage-float">
+                        -{playerDamage}
+                      </span>
+                    )}
+                  </div>
+                )}
+                <div className="text-sm font-medium text-zinc-300 mb-2">Player</div>
+                {/* Health Bar */}
+                <div className="w-32 h-3 health-bar-container relative">
                   <div
                     className="h-full health-bar-fill-player"
                     style={{
@@ -351,49 +366,44 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                       transition: "width 0.3s",
                     }}
                   />
-                  {/* Player Damage Number */}
-                  {playerDamage !== null && (
-                    <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-red-300 text-xs font-bold pointer-events-none select-none animate-damage-float">
-                      {playerDamage}
-                    </span>
-                  )}
                 </div>
-                {isDead ? (
-                  <div className="text-red-500 font-bold text-2xl">DEAD</div>
-                ) : (
-                  <div className="flex justify-center">
-                    <img
-                      src={`${spritePath}/${character.sprite}`}
-                      alt={"Player"}
-                      className={`equipment-img mb-2 transition-filter duration-200 ${
-                        playerDamage !== null ? "red-hit" : ""
-                      }`}
-                      width={32}
-                      height={32}
-                    />
-                  </div>
-                )}
-                <div className="font-bold text-center">Player</div>
-                <div>Damage: {effectiveStats.damage}</div>
-                <div>Armor: {effectiveStats.armor}</div>
-                <div>Attack Speed: {effectiveStats.attackSpeed.toFixed(1)}</div>
+                <div className="mt-1 text-xs text-zinc-400">
+                  {Math.floor(currentHealth)} / {Math.floor(effectiveStats.health)}
+                </div>
               </>
             ) : (
               <div>No character!</div>
             )}
           </div>
 
+          {/* VS divider */}
+          <div className="text-zinc-600 text-lg font-bold">VS</div>
+
+          {/* Enemy */}
           <div className="flex flex-col items-center">
-            {/* Enemy Details */}
             {currentEnemy ? (
               <>
-                {/* Health Numbers Above Bar */}
-                <div className="mb-0.5 text-xs text-white font-bold">
-                  {Math.floor(currentEnemyHealth)} /{" "}
-                  {Math.floor(currentEnemy.health)}
+                <div className="flex justify-center relative">
+                  <img
+                    src={`${spritePath}/${currentEnemy.sprite}`}
+                    alt={currentEnemy.name}
+                    className={`mb-3 transition-filter duration-200 ${
+                      enemyDamage !== null ? "red-hit" : ""
+                    }`}
+                    style={{ width: 64, height: 64, imageRendering: "pixelated" }}
+                  />
+                  {/* Enemy Damage Number */}
+                  {enemyDamage !== null && (
+                    <span className={`absolute left-1/2 -translate-x-1/2 -top-4 font-bold pointer-events-none select-none animate-damage-float ${
+                      isEnemyCrit ? "text-violet-400 text-base" : "text-zinc-200 text-sm"
+                    }`}>
+                      -{enemyDamage}
+                    </span>
+                  )}
                 </div>
-                {/* Thin Health Bar */}
-                <div className="w-32 h-2.5 health-bar-container mb-1 relative">
+                <div className="text-sm font-medium text-zinc-300 mb-2">{currentEnemy.name}</div>
+                {/* Health Bar */}
+                <div className="w-32 h-3 health-bar-container relative">
                   <div
                     className="h-full health-bar-fill-enemy"
                     style={{
@@ -404,30 +414,10 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                       transition: "width 0.3s",
                     }}
                   />
-                  {/* Enemy Damage Number */}
-                  {enemyDamage !== null && (
-                    <span className={`absolute left-1/2 -translate-x-1/2 -top-7 font-bold pointer-events-none select-none animate-damage-float ${
-                      isEnemyCrit ? "text-orange-400 text-sm" : "text-yellow-200 text-xs"
-                    }`}>
-                      {enemyDamage}
-                    </span>
-                  )}
                 </div>
-                <div className="flex justify-center">
-                  <img
-                    src={`${spritePath}/${currentEnemy.sprite}`}
-                    alt={currentEnemy.name}
-                    className={`equipment-img mb-2 transition-filter duration-200 ${
-                      enemyDamage !== null ? "red-hit" : ""
-                    }`}
-                    width={32}
-                    height={32}
-                  />
+                <div className="mt-1 text-xs text-zinc-400">
+                  {Math.floor(currentEnemyHealth)} / {Math.floor(currentEnemy.health)}
                 </div>
-                <div className="font-bold text-center">{currentEnemy.name}</div>
-                <div>Damage: {currentEnemy.damage}</div>
-                <div>Armor: {currentEnemy.armor}</div>
-                <div>Attack Speed: {currentEnemy.attackSpeed.toFixed(1)}</div>
               </>
             ) : (
               <div>No enemy!</div>
@@ -448,7 +438,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                 className="game-button"
                 onClick={() => onReturnToWaveSelect?.()}
               >
-                Wave Select
+                Return to Camp
               </button>
             </>
           ) : !isDead && (

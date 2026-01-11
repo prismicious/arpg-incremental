@@ -23,7 +23,7 @@ export const CombatLog: React.FC<CombatLogProps> = ({ entries }) => {
   const getEntryColor = (type: CombatLogEntry["type"]) => {
     switch (type) {
       case "player-attack":
-        return "text-amber-400";
+        return "text-zinc-300";
       case "enemy-attack":
         return "text-red-400";
       case "enemy-killed":
@@ -42,19 +42,14 @@ export const CombatLog: React.FC<CombatLogProps> = ({ entries }) => {
   };
 
   return (
-    <div className="w-full bg-black/30 border-t border-[rgba(180,140,80,0.2)]">
-      <div className="flex items-center gap-2 px-4 py-2 border-b border-zinc-800/50">
-        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-          Combat Log
-        </span>
-      </div>
+    <div className="mx-4 mb-4 bg-black/40 border border-zinc-800 rounded-sm">
       <div
         ref={scrollRef}
-        className="combat-log-entries overflow-y-auto px-4 py-2"
-        style={{ maxHeight: "100px" }}
+        className="combat-log-entries overflow-y-auto px-3 py-2"
+        style={{ maxHeight: "80px" }}
       >
         {entries.length === 0 ? (
-          <div className="text-gray-600 text-xs italic">
+          <div className="text-zinc-600 text-xs italic">
             Waiting for combat...
           </div>
         ) : (

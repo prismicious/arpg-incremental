@@ -99,10 +99,18 @@ const Canvas: React.FC = () => {
               Explore
             </button>
             <button
-              className={`header-tab ${activeTab === "character" ? "active" : ""}`}
+              className={`header-tab ${activeTab === "character" ? "active" : ""} relative`}
               onClick={() => setActiveTab("character")}
             >
               Character
+              {character.unallocAttrPts > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full text-[10px] font-bold flex items-center justify-center text-white animate-pulse"
+                  style={{ boxShadow: "0 0 8px 2px rgba(34, 197, 94, 0.6)" }}
+                >
+                  +
+                </span>
+              )}
             </button>
           </div>
 

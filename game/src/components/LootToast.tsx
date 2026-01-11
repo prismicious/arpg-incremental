@@ -96,8 +96,8 @@ export const LootToast: React.FC<LootToastProps> = ({ items, spritePath, onCompl
             toast.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
           }`}
           style={{
-            background: "rgba(15, 12, 10, 0.95)",
-            border: "1px solid rgba(180, 140, 80, 0.4)",
+            background: "rgba(12, 12, 14, 0.95)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
             transitionDelay: `${index * 50}ms`,
           }}
         >

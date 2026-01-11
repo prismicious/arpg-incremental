@@ -32,11 +32,11 @@ export const WaveSelector: React.FC<WaveSelectorProps> = ({
                 w-9 h-9 rounded-md border transition-all relative text-sm font-bold
                 ${wave.unlocked
                   ? selectedWave === wave.id
-                    ? "border-amber-400 bg-amber-900/50 text-amber-300"
+                    ? "border-white/60 bg-white/10 text-white"
                     : isCompleted(wave.id)
                       ? "border-green-600/60 bg-green-900/30 text-green-400"
                       : "border-zinc-600 bg-zinc-800/50 text-gray-300 hover:border-zinc-500"
-                  : "border-zinc-700 bg-zinc-900/50 text-zinc-600 cursor-not-allowed"
+                  : "border-zinc-800/50 bg-zinc-900/30 text-zinc-700 cursor-not-allowed opacity-40"
                 }
               `}
               onClick={() => wave.unlocked && onSelectWave(wave.id)}
@@ -47,7 +47,7 @@ export const WaveSelector: React.FC<WaveSelectorProps> = ({
                   <span className="text-[8px] text-white">✓</span>
                 </div>
               )}
-              {wave.unlocked ? wave.id : "🔒"}
+              {wave.id}
             </button>
           ))}
         </div>
@@ -57,14 +57,20 @@ export const WaveSelector: React.FC<WaveSelectorProps> = ({
       {selected && (
         <div className="flex-1 flex flex-col items-center justify-center">
           <h1
-            className="text-4xl font-bold mb-2 drop-shadow-lg"
-            style={{ color: selected.theme.accent, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+            className="text-4xl font-bold mb-2"
+            style={{
+              background: `linear-gradient(180deg, #fff 0%, ${selected.theme.accent} 50%, ${selected.theme.accent}88 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
           >
             {selected.name}
           </h1>
-          <p className="text-gray-300 mb-6 drop-shadow">{selected.description}</p>
+          <p className="text-zinc-400 mb-6">{selected.description}</p>
           <button
-            className="game-button px-10 py-3 text-lg"
+            className="px-10 py-3 text-lg font-bold border-2 border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30 transition-all"
             onClick={onStartWave}
             disabled={!selected?.unlocked}
           >

@@ -13,7 +13,7 @@ interface PostGameScreenProps {
 }
 
 const tierBorderColors: Record<string, string> = {
-  wood: "border-amber-600",
+  wood: "border-stone-500",
   iron: "border-slate-300",
   gold: "border-yellow-400",
   diamond: "border-cyan-400",
@@ -79,7 +79,7 @@ export const PostGameScreen: React.FC<PostGameScreenProps> = ({
           Continue
         </button>
         <button className="modern-button-secondary" onClick={onWaveSelect}>
-          Wave Select
+          Return to Camp
         </button>
       </div>
     </div>
