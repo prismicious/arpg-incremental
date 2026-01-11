@@ -8,7 +8,7 @@ import CharacterBox from "./CharacterBox";
 import CombatBox from "./CombatBox";
 import WaveSelector from "./WaveSelector";
 
-const spritePath = "/assets/sprites";
+const spritePath = `${import.meta.env.BASE_URL}assets/sprites`;
 
 // Cog/Settings icon component (filled)
 const CogIcon: React.FC<{ className?: string }> = ({ className }) => (

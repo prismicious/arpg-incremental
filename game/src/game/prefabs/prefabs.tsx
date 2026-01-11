@@ -107,7 +107,7 @@ export function createWaveDefinitions(): WaveDefinition[] {
       ],
       unlocked: true,
       theme: {
-        background: "/assets/Free Pixel Art Forest/Free Pixel Art Forest/Preview/Background.png",
+        background: `${import.meta.env.BASE_URL}assets/Free Pixel Art Forest/Free Pixel Art Forest/Preview/Background.png`,
         gradient: "linear-gradient(180deg, #1a2f1a 0%, #0d1f0d 50%, #0a1a0a 100%)",
         accent: "#4ade80",
       },
