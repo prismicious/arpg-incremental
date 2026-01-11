@@ -10,7 +10,7 @@ interface InventoryProps {
 }
 
 export const Inventory: React.FC<InventoryProps> = ({character, setCharacter, spritePath}) => {
-    
+
     React.useEffect(() => {
 
     }, [character])
