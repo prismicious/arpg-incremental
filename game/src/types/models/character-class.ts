@@ -5,6 +5,7 @@ import type {
   Chest,
   Helmet,
   Potion,
+  Ring,
   Weapon,
 } from "../interfaces/inventory-item";
 import type { Stats } from "../interfaces/stats";
@@ -37,11 +38,13 @@ export class Character implements ICharacter {
     this.gold = 0;
   }
 
-  handleFightEnd(amount: number, loot: InventoryItemUnion[]): void {
+  handleFightEnd(amount: number, loot: InventoryItemUnion[], gold: number): void {
     console.log("Combat ended, gained experience:", amount);
     console.log("Loot received:", loot);
+    console.log("Gold received:", gold);
     this.experience += amount;
     this.totalExperience += amount;
+    this.gold += gold;
     this.distributeLoot(loot);
     while (this.checkLevelUpThreshold()) {
       this.experience -= this.getExperienceToNextLevel();
@@ -51,7 +54,54 @@ export class Character implements ICharacter {
 
   distributeLoot(loot: InventoryItemUnion[]): void {
     console.log("Pushing loot to inventory", loot);
-    this.inventory.push(...loot);
+    for (const item of loot) {
+      // Auto-equip if slot is empty
+      if (this.tryAutoEquip(item)) {
+        console.log(`Auto-equipped: ${item.slot}`);
+      } else {
+        this.inventory.push(item);
+      }
+    }
+  }
+
+  tryAutoEquip(item: InventoryItemUnion): boolean {
+    const slot = item.slot;
+
+    // Handle rings specially (two slots)
+    if (slot === "ring") {
+      if (!this.equipment.ring1) {
+        this.equipment.ring1 = item as Ring;
+        return true;
+      } else if (!this.equipment.ring2) {
+        this.equipment.ring2 = item as Ring;
+        return true;
+      }
+      return false;
+    }
+
+    // For other slots, check if empty
+    if (slot === "weapon" && !this.equipment.weapon) {
+      this.equipment.weapon = item as Weapon;
+      return true;
+    }
+    if (slot === "helmet" && !this.equipment.helmet) {
+      this.equipment.helmet = item as Helmet;
+      return true;
+    }
+    if (slot === "chest" && !this.equipment.chest) {
+      this.equipment.chest = item as Chest;
+      return true;
+    }
+    if (slot === "amulet" && !this.equipment.amulet) {
+      this.equipment.amulet = item as Amulet;
+      return true;
+    }
+    if (slot === "potion" && !this.equipment.potion) {
+      this.equipment.potion = item as Potion;
+      return true;
+    }
+
+    return false;
   }
 
   checkLevelUpThreshold(): boolean {
@@ -77,6 +127,13 @@ export class Character implements ICharacter {
     }
 
     this.inventory.push(item);
+  }
+
+  allocateAttribute(attribute: "strength" | "dexterity" | "intelligence"): boolean {
+    if (this.unallocAttrPts <= 0) return false;
+    this.stats[attribute]++;
+    this.unallocAttrPts--;
+    return true;
   }
 
   equipItem(item: InventoryItemUnion): void {

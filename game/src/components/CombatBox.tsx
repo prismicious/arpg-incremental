@@ -1,15 +1,21 @@
-import React, { useReducer, useEffect, useRef, useState } from "react";
+import React, { useReducer, useEffect, useRef, useState, useCallback } from "react";
 import { reducer, initialState } from "../game/reducers";
 import type { EnemyWave } from "../types/models/enemy-wave-class";
 import { Character } from "../types/models/character-class";
 import type { Stats } from "../types/interfaces/stats";
-import "./CombatBox.css"; // Ensure CSS is imported
+import type { InventoryItemUnion } from "../types/interfaces/character";
+import { CombatLog, type CombatLogEntry } from "./CombatLog";
+import { LootPopup } from "./LootPopup";
+import { PostGameScreen } from "./PostGameScreen";
+import "./CombatBox.css";
 
 interface CombatBoxProps {
   character: Character;
   effectiveStats: Stats;
   currentWave: EnemyWave;
   spritePath: string;
+  onWaveComplete?: () => void;
+  onReturnToWaveSelect?: () => void;
 }
 
 export const CombatBox: React.FC<CombatBoxProps> = ({
@@ -17,6 +23,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   effectiveStats,
   currentWave,
   spritePath,
+  onWaveComplete,
+  onReturnToWaveSelect,
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -31,11 +39,17 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   } = state;
 
   const enemyCount = currentWave.enemies.length;
-  const [isPaused, setIsPaused] = React.useState(true);
+  const [waveComplete, setWaveComplete] = useState(false);
+
+  // Wave stats tracking
+  const [waveLoot, setWaveLoot] = useState<InventoryItemUnion[]>([]);
+  const [waveGold, setWaveGold] = useState(0);
+  const [initialLevel] = useState(character.level); // Track level at start of wave
 
   // Damage number state
   const [playerDamage, setPlayerDamage] = useState<number | null>(null);
   const [enemyDamage, setEnemyDamage] = useState<number | null>(null);
+  const [isEnemyCrit, setIsEnemyCrit] = useState(false);
   const playerDamageTimeout = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
@@ -44,6 +58,27 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
   // Level up glow effect state
   const [expGlow, setExpGlow] = useState(false);
   const prevLevel = useRef(character.level);
+
+  // Combat log state
+  const [combatLog, setCombatLog] = useState<CombatLogEntry[]>([]);
+  const logIdRef = useRef(0);
+
+  // Loot popup state
+  const [lootItems, setLootItems] = useState<InventoryItemUnion[]>([]);
+
+  const addLogEntry = useCallback((type: CombatLogEntry["type"], message: string, damage?: number) => {
+    setCombatLog(prev => [...prev.slice(-49), {
+      id: ++logIdRef.current,
+      type,
+      message,
+      damage
+    }]);
+  }, []);
+
+  const handleLootComplete = useCallback(() => {
+    setLootItems([]);
+  }, []);
+
 
   useEffect(() => {
     // Initialize combat state
@@ -64,19 +99,63 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
 
   useEffect(() => {
     function gameLoop() {
-      if (isPaused) return;
+      if (waveComplete) return;
       if (!currentEnemy) return;
       if (currentHealth <= 0) {
+        addLogEntry("player-died", "You have been defeated!");
         dispatch({
           type: "END_COMBAT",
         });
+        // Auto-return to wave select after short delay
+        setTimeout(() => {
+          onReturnToWaveSelect?.();
+        }, 1500);
         return;
       }
       if (currentEnemyHealth <= 0) {
+        // Log enemy killed
+        addLogEntry("enemy-killed", `${currentEnemy.name} defeated!`);
+
+        // Track wave stats
+        setWaveGold(prev => prev + currentEnemy.goldDropped);
+        if (currentEnemy.loot.length > 0) {
+          setWaveLoot(prev => [...prev, ...currentEnemy.loot]);
+        }
+
+        // Log gold gained
+        if (currentEnemy.goldDropped > 0) {
+          addLogEntry("gold", `+${currentEnemy.goldDropped} gold`);
+        }
+
+        // Show loot popup and log if there's loot
+        if (currentEnemy.loot.length > 0) {
+          setLootItems(currentEnemy.loot);
+
+          // Log each loot item
+          currentEnemy.loot.forEach(item => {
+            const tierStr = item.tier && item.tier !== "none"
+              ? item.tier.charAt(0).toUpperCase() + item.tier.slice(1) + " "
+              : "";
+            const itemName = "weaponType" in item
+              ? tierStr + item.weaponType.charAt(0).toUpperCase() + item.weaponType.slice(1)
+              : tierStr + item.slot.charAt(0).toUpperCase() + item.slot.slice(1);
+            addLogEntry("loot", `Acquired: ${itemName}`);
+          });
+        }
+
         character.handleFightEnd(
           currentEnemy.experienceGranted,
-          currentEnemy.loot
+          currentEnemy.loot,
+          currentEnemy.goldDropped
         );
+
+        // Check if this was the last enemy
+        if (enemyIndex + 1 >= currentWave.enemies.length) {
+          addLogEntry("enemy-killed", "Wave Complete! All enemies defeated!");
+          setWaveComplete(true);
+          return;
+        }
+
         dispatch({
           type: "NEXT_ENEMY",
           payload: { enemies: currentWave.enemies },
@@ -85,6 +164,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         // Enemy attacks player
         const dmg = Math.max(currentEnemy.damage - effectiveStats.armor, 0);
         setPlayerDamage(dmg);
+        addLogEntry("enemy-attack", `${currentEnemy.name} hit you for ${dmg} damage`, dmg);
         if (playerDamageTimeout.current)
           clearTimeout(playerDamageTimeout.current);
         playerDamageTimeout.current = setTimeout(
@@ -102,14 +182,27 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         });
       } else {
         // Player attacks enemy
-        const dmg = Math.max(effectiveStats.damage - currentEnemy.armor, 0);
+        const baseDmg = Math.max(effectiveStats.damage - currentEnemy.armor, 0);
+        // Crit chance: 10% base + 1% per DEX
+        const critChance = 0.10 + (effectiveStats.dexterity * 0.01);
+        const isCrit = Math.random() < critChance;
+        const dmg = isCrit ? baseDmg * 2 : baseDmg;
+
         setEnemyDamage(dmg);
+        setIsEnemyCrit(isCrit);
+
+        if (isCrit) {
+          addLogEntry("crit", `CRITICAL! You hit ${currentEnemy.name} for ${dmg} damage!`, dmg);
+        } else {
+          addLogEntry("player-attack", `You hit ${currentEnemy.name} for ${dmg} damage`, dmg);
+        }
+
         if (enemyDamageTimeout.current)
           clearTimeout(enemyDamageTimeout.current);
-        enemyDamageTimeout.current = setTimeout(
-          () => setEnemyDamage(null),
-          120 // was 250
-        );
+        enemyDamageTimeout.current = setTimeout(() => {
+          setEnemyDamage(null);
+          setIsEnemyCrit(false);
+        }, 120);
 
         dispatch({
           type: "UPDATE_ENEMY_HEALTH",
@@ -133,7 +226,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
       clearInterval(interval);
     };
   }, [
-    isPaused,
+    waveComplete,
     currentEnemyHealth,
     playerNextAttack,
     enemyNextAttack,
@@ -142,6 +235,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     character,
     currentEnemy,
     currentHealth,
+    addLogEntry,
+    onReturnToWaveSelect,
   ]);
 
   useEffect(() => {
@@ -152,23 +247,37 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
     }
   }, [character.level]);
 
-  const handleButtonClick = () => {
-    if (isDead) {
-      // Restart combat
-      dispatch({
-        type: "RESTART_COMBAT",
-        payload: { enemies: currentWave.enemies, effectiveStats, character },
-      });
-      setIsPaused(true);
-      return;
-    }
-    setIsPaused((prev) => !prev);
-  };
+
+  // Show post-game screen when wave is complete
+  if (waveComplete) {
+    return (
+      <div className="game-combat-panel flex items-center justify-center">
+        <PostGameScreen
+          lootCollected={waveLoot}
+          goldEarned={waveGold}
+          character={character}
+          previousLevel={initialLevel}
+          onContinue={() => onWaveComplete?.()}
+          onWaveSelect={() => onReturnToWaveSelect?.()}
+          spritePath={spritePath}
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="game-panel rounded-xl p-10 flex flex-col items-center max-w-xl w-lg relative">
-      {/* EXP Bar at the very top, embedded into the box */}
-      <div className="absolute left-0 top-0 w-full">
+    <div className="game-combat-panel flex flex-col">
+      <div className="flex-1 flex flex-col p-6 relative">
+        {/* Loot Popup Overlay */}
+        {lootItems.length > 0 && (
+          <LootPopup
+            items={lootItems}
+            spritePath={spritePath}
+            onComplete={handleLootComplete}
+          />
+        )}
+        {/* EXP Bar at the very top, embedded into the box */}
+        <div className="absolute left-0 top-0 w-full">
         <div
           className={
             "w-full h-9 bg-zinc-800 rounded-t-xl border-b border-[rgba(180,140,80,0.2)] overflow-hidden relative" +
@@ -213,8 +322,8 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
           </div>
         </div>
       </div>
-      {/* Remove top padding from combat content */}
-      <div className="w-full flex flex-col items-center">
+      {/* Add top padding to account for absolute XP bar */}
+      <div className="w-full flex flex-col items-center pt-12">
         <h2 className="text-xl font-semibold mb-1 tracking-wide">Combat</h2>
         {/* Enemy Counter */}
         <div className="mb-2 text-sm text-gray-300">
@@ -250,7 +359,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   )}
                 </div>
                 {isDead ? (
-                  "Dead"
+                  <div className="text-red-500 font-bold text-2xl">DEAD</div>
                 ) : (
                   <div className="flex justify-center">
                     <img
@@ -297,7 +406,9 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
                   />
                   {/* Enemy Damage Number */}
                   {enemyDamage !== null && (
-                    <span className="absolute left-1/2 -translate-x-1/2 -top-7 text-yellow-200 text-xs font-bold pointer-events-none select-none animate-damage-float">
+                    <span className={`absolute left-1/2 -translate-x-1/2 -top-7 font-bold pointer-events-none select-none animate-damage-float ${
+                      isEnemyCrit ? "text-orange-400 text-sm" : "text-yellow-200 text-xs"
+                    }`}>
                       {enemyDamage}
                     </span>
                   )}
@@ -323,14 +434,52 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
             )}
           </div>
         </div>
-        {/* Pause / Resume button */}
-        <button
-          className="game-button mt-4"
-          onClick={() => handleButtonClick()}
-        >
-          {isDead ? "Restart Combat" : isPaused ? "Start Combat" : "Pause Combat"}
-        </button>
+        {/* Combat buttons */}
+        <div className="flex gap-3 mt-4">
+          {waveComplete ? (
+            <>
+              <button
+                className="game-button"
+                onClick={() => onWaveComplete?.()}
+              >
+                Continue (Unlock Next)
+              </button>
+              <button
+                className="game-button"
+                onClick={() => onReturnToWaveSelect?.()}
+              >
+                Wave Select
+              </button>
+            </>
+          ) : !isDead && (
+            (() => {
+              const potion = character.inventory.find(item => item.type === "potion");
+              const potionCount = character.inventory.filter(item => item.type === "potion").length;
+              return (
+                <button
+                  className={`game-button ${!potion ? "opacity-50 cursor-not-allowed" : ""}`}
+                  disabled={!potion}
+                  onClick={() => {
+                    if (potion && "healAmount" in potion) {
+                      dispatch({
+                        type: "HEAL_PLAYER",
+                        payload: { amount: potion.healAmount, maxHealth: effectiveStats.health },
+                      });
+                      character.inventory = character.inventory.filter(i => i.id !== potion.id);
+                      addLogEntry("loot", `Used potion: +${potion.healAmount} HP`);
+                    }
+                  }}
+                >
+                  Potion ({potionCount})
+                </button>
+              );
+            })()
+          )}
+        </div>
       </div>
+      </div>
+      {/* Combat Log below combat area */}
+      <CombatLog entries={combatLog} />
     </div>
   );
 };

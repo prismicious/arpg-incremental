@@ -40,7 +40,8 @@ export type CombatAction =
         character: Character;
       };
     }
-  | { type: "END_COMBAT" };
+  | { type: "END_COMBAT" }
+  | { type: "HEAL_PLAYER"; payload: { amount: number; maxHealth: number } };
 
 // Update the initial state type
 export const initialState: CombatState = {
@@ -118,6 +119,15 @@ export function reducer(state: CombatState, action: CombatAction): CombatState {
       return {
         ...state,
         isDead: true,
+      };
+
+    case "HEAL_PLAYER":
+      return {
+        ...state,
+        currentHealth: Math.min(
+          state.currentHealth + action.payload.amount,
+          action.payload.maxHealth
+        ),
       };
 
     default:

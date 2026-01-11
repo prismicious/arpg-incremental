@@ -13,6 +13,7 @@ export class Enemy implements IEnemy {
   loot: InventoryItemUnion[];
   armor: number;
   experienceGranted: number;
+  goldDropped: number;
   monsterLevel?: number; // Optional property for monster level
 
   constructor(enemyPrefab: EnemyPrefab) {
@@ -25,6 +26,7 @@ export class Enemy implements IEnemy {
     this.loot = generateRandomLoot({ level: enemyPrefab.monsterLevel ?? 1 });
     this.armor = enemyPrefab.armor || 0;
     this.experienceGranted = enemyPrefab.experienceGranted;
+    this.goldDropped = enemyPrefab.goldDropped;
     this.monsterLevel = enemyPrefab.monsterLevel;
   }
 

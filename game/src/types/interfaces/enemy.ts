@@ -9,5 +9,6 @@ export interface IEnemy {
   attackSpeed: number; // Attacks per second
   sprite: string;
   experienceGranted: number;
+  goldDropped: number;
   monsterLevel?: number; // Optional property for monster level
 }

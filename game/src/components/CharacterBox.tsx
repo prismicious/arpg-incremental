@@ -119,7 +119,7 @@ export const CharacterBox: React.FC<{
   };
 
   return (
-    <div className="game-panel flex flex-col items-center max-w-md w-full mx-auto mt-2 p-4">
+    <div className="flex flex-col items-center w-full p-6">
       <h2 className="text-xl font-semibold mb-2 text-gray-100">Character</h2>
       <div className="flex flex-row flex-wrap gap-2 justify-center items-end w-full mb-2">
         {/* Helmet */}
@@ -271,9 +271,50 @@ export const CharacterBox: React.FC<{
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-gray-300 mt-1">
           <div>ATKSpd: {effectiveStats.attackSpeed.toFixed(2)}</div>
           <div>ARMOR: {effectiveStats.armor}</div>
-          <div>STR: {effectiveStats.strength}</div>
-          <div>DEX: {effectiveStats.dexterity}</div>
-          <div>INT: {effectiveStats.intelligence}</div>
+        </div>
+        {/* Attribute allocation section */}
+        {character.unallocAttrPts > 0 && (
+          <div className="mt-2 mb-1 text-center text-xs text-amber-400">
+            {character.unallocAttrPts} point{character.unallocAttrPts > 1 ? "s" : ""} to allocate!
+          </div>
+        )}
+        <div className="flex flex-wrap justify-center gap-x-3 gap-y-2 text-xs text-gray-300 mt-1">
+          <div className="flex items-center gap-1">
+            <span>STR: {character.stats.strength}</span>
+            {character.unallocAttrPts > 0 && (
+              <button
+                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                onClick={() => {
+                  character.allocateAttribute("strength");
+                  setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));
+                }}
+              >+</button>
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <span>DEX: {character.stats.dexterity}</span>
+            {character.unallocAttrPts > 0 && (
+              <button
+                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                onClick={() => {
+                  character.allocateAttribute("dexterity");
+                  setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));
+                }}
+              >+</button>
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <span>INT: {character.stats.intelligence}</span>
+            {character.unallocAttrPts > 0 && (
+              <button
+                className="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded"
+                onClick={() => {
+                  character.allocateAttribute("intelligence");
+                  setCharacter(Object.assign(Object.create(Object.getPrototypeOf(character)), character));
+                }}
+              >+</button>
+            )}
+          </div>
         </div>
       </div>
       {character && (

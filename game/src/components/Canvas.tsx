@@ -1,27 +1,12 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { createDefaultCharacter } from "../game/factories/CharacterFactory";
 import { createEnemyWave } from "../game/factories/EnemyFactory";
 import { calculateEffectiveStats } from "../game/util";
 import "../icons.css";
-import { AllEnemyWaves } from "../types/models/all-enemy-waves-class";
-import { EnemyWaveManager } from "../types/models/enemy-wave-manager";
-import { goblinPrefab, orcPrefab, slimePrefab } from "../game/prefabs/prefabs";
-import {
-  debugCreateAllItems,
-} from "../game/factories/EquipmentFactory";
+import { createWaveDefinitions, type WaveDefinition } from "../game/prefabs/prefabs";
 import CharacterBox from "./CharacterBox";
 import CombatBox from "./CombatBox";
-import type { InventoryItemUnion } from "../types/interfaces/character";
-
-const wave1 = createEnemyWave([
-  orcPrefab,
-  slimePrefab,
-  orcPrefab,
-  goblinPrefab,
-  slimePrefab,
-]);
-const allEnemyWaves = new AllEnemyWaves();
-allEnemyWaves.addWave(wave1);
+import WaveSelector from "./WaveSelector";
 
 const spritePath = "/assets/sprites";
 
@@ -38,74 +23,145 @@ const CogIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
+type TabType = "explore" | "character";
+
 const Canvas: React.FC = () => {
-  const enemyWaveManager = React.useMemo(() => new EnemyWaveManager(allEnemyWaves), []);
-  const [character, setCharacter] = React.useState(createDefaultCharacter());
-  const [effectiveStats, setEffectiveStats] = React.useState(
+  const [character, setCharacter] = useState(createDefaultCharacter());
+  const [effectiveStats, setEffectiveStats] = useState(
     calculateEffectiveStats(character)
   );
-  const [isCharacterModalOpen, setCharacterModalOpen] = React.useState(false);
-  const [showSettings, setShowSettings] = React.useState(false);
-  const currentWave = enemyWaveManager.currentWave;
+  const [activeTab, setActiveTab] = useState<TabType>("explore");
+  const [showSettings, setShowSettings] = useState(false);
 
-  React.useEffect(() => {
-    if (character.inventory.length === 0) {
-      const items = debugCreateAllItems() as InventoryItemUnion[];
-      character.addItemToInventory(items);
+  // Wave system state
+  const [waveDefinitions, setWaveDefinitions] = useState<WaveDefinition[]>(() => createWaveDefinitions());
+  const [selectedWaveId, setSelectedWaveId] = useState(1);
+  const [completedWaves, setCompletedWaves] = useState<number[]>([]);
+  const [inCombat, setInCombat] = useState(false);
+  const [currentWave, setCurrentWave] = useState<ReturnType<typeof createEnemyWave> | null>(null);
+
+  const handleStartWave = useCallback(() => {
+    const waveDef = waveDefinitions.find(w => w.id === selectedWaveId);
+    if (waveDef && waveDef.unlocked) {
+      const enemyWave = createEnemyWave(waveDef.enemies);
+      setCurrentWave(enemyWave);
+      setInCombat(true);
     }
+  }, [waveDefinitions, selectedWaveId]);
+
+  const handleWaveComplete = useCallback(() => {
+    // Mark wave as completed
+    setCompletedWaves(prev =>
+      prev.includes(selectedWaveId) ? prev : [...prev, selectedWaveId]
+    );
+    // Unlock next wave
+    setWaveDefinitions(prev => prev.map(w =>
+      w.id === selectedWaveId + 1 ? { ...w, unlocked: true } : w
+    ));
+    setInCombat(false);
+    setCurrentWave(null);
+  }, [selectedWaveId]);
+
+  const handleReturnToWaveSelect = useCallback(() => {
+    setInCombat(false);
+    setCurrentWave(null);
   }, []);
 
+
   return (
-    <section className="min-h-screen flex flex-col bg-black bg-opacity-60 text-white">
-      <header
-        className="py-3 px-8 flex items-center justify-between"
-        style={{ background: "rgba(15, 12, 10, 0.7)" }}
-      >
-        <button
-          className="game-button"
-          onClick={() => setCharacterModalOpen((prev) => !prev)}
+    <section className="min-h-screen flex justify-center text-white">
+      {/* Settings Modal */}
+      {showSettings && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          onClick={() => setShowSettings(false)}
         >
-          Character
-        </button>
-        <button
-          className="game-button-icon"
-          onClick={() => setShowSettings((prev) => !prev)}
-          title="Settings"
-        >
-          <CogIcon />
-        </button>
-      </header>
-      <main className="flex flex-1 container mx-auto px-4 py-4">
-        {showSettings && (
           <div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            onClick={() => setShowSettings(false)}
+            className="game-panel p-6 rounded-xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="game-panel p-6 rounded-xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-lg font-semibold mb-4">Settings</h2>
-              <p className="text-gray-400">Settings coming soon...</p>
-            </div>
+            <h2 className="text-lg font-semibold mb-4">Settings</h2>
+            <p className="text-gray-400">Settings coming soon...</p>
           </div>
-        )}
-        {isCharacterModalOpen && (
-          <div
-            className="fixed inset-0 flex items-center z-50 justify-start pl-4"
-            onClick={() => setCharacterModalOpen(false)}
-          >
-            <div
-              className="game-panel p-1 rounded-xl relative min-w-[350px] max-w-[95vw]"
-              onClick={(e) => e.stopPropagation()}
+        </div>
+      )}
+
+      {/* Main content column */}
+      <div className="game-main-column">
+        {/* Unified header bar */}
+        <div className="unified-header">
+          {/* Left: Tabs */}
+          <div className="header-tabs">
+            <button
+              className={`header-tab ${activeTab === "explore" ? "active" : ""}`}
+              onClick={() => setActiveTab("explore")}
             >
-              <button
-                className="absolute top-2 right-2 text-white hover:text-red-400 text-xl bg-zinc-800 hover:bg-zinc-700 rounded w-8 h-8 flex items-center justify-center transition-all duration-150 border border-zinc-600"
-                onClick={() => setCharacterModalOpen(false)}
-                title="Close"
-              >
-                ✕
-              </button>
+              Explore
+            </button>
+            <button
+              className={`header-tab ${activeTab === "character" ? "active" : ""}`}
+              onClick={() => setActiveTab("character")}
+            >
+              Character
+            </button>
+          </div>
+
+          {/* Right: Gold & Settings */}
+          <div className="header-actions">
+            <div className="header-gold">
+              <span className="text-yellow-400">&#x1FA99;</span>
+              <span>{character.gold}</span>
+            </div>
+            <button
+              className="header-icon-btn"
+              onClick={() => setShowSettings((prev) => !prev)}
+              title="Settings"
+            >
+              <CogIcon />
+            </button>
+          </div>
+        </div>
+
+        {/* Tab content */}
+        <div
+          className="flex-1 flex flex-col overflow-hidden transition-all duration-500"
+          style={{
+            ...(activeTab === "explore" && (() => {
+              const theme = waveDefinitions.find(w => w.id === selectedWaveId)?.theme;
+              if (theme?.background) {
+                return {
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('${theme.background}')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center bottom',
+                };
+              }
+              return { background: theme?.gradient };
+            })()),
+          }}
+        >
+          {activeTab === "explore" ? (
+            inCombat && currentWave && effectiveStats ? (
+              <CombatBox
+                character={character}
+                effectiveStats={effectiveStats}
+                currentWave={currentWave}
+                spritePath={spritePath}
+                onWaveComplete={handleWaveComplete}
+                onReturnToWaveSelect={handleReturnToWaveSelect}
+              />
+            ) : (
+              <div className="flex-1 flex">
+                <WaveSelector
+                  waves={waveDefinitions}
+                  selectedWave={selectedWaveId}
+                  completedWaves={completedWaves}
+                  onSelectWave={setSelectedWaveId}
+                  onStartWave={handleStartWave}
+                />
+              </div>
+            )
+          ) : (
+            <div className="flex-1 overflow-y-auto">
               <CharacterBox
                 character={character}
                 setCharacter={setCharacter}
@@ -114,21 +170,9 @@ const Canvas: React.FC = () => {
                 spritePath={spritePath}
               />
             </div>
-          </div>
-        )}
-        <div className="flex justify-center w-full">
-          {currentWave && effectiveStats ? (
-            <CombatBox
-              character={character}
-              effectiveStats={effectiveStats}
-              currentWave={currentWave}
-              spritePath={spritePath}
-            />
-          ) : (
-            <div className="text-center text-gray-400">No wave or effective stats!</div>
           )}
         </div>
-      </main>
+      </div>
     </section>
   );
 };

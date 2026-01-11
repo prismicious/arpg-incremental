@@ -1,23 +1,21 @@
-import { TiersEnum } from "../../types/interfaces/enums";
 import { Character } from "../../types/models/character-class";
-import { createWeapon } from "./EquipmentFactory";
 
 
 export function createDefaultCharacter(): Character {
 
   const stats = {
-    health: 100,
+    health: 50,
     mana: 0,
-    damage: 5,
+    damage: 10,
     attackSpeed: 1,
-    armor: 5,
+    armor: 2,
     strength: 1,
     dexterity: 1,
     intelligence: 1,
   }
 
   const defaultEquipment = {
-    weapon: createWeapon("sword", 5, TiersEnum.diamond),
+    weapon: null,
     chest: null,
     helmet: null,
     ring1: null,

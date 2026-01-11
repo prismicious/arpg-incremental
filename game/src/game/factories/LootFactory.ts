@@ -43,10 +43,10 @@ interface LootConfig {
 }
 
 const DEFAULT_LOOT_CONFIG: LootConfig = {
-  baseDropChance: 0.7,
+  baseDropChance: 0.25,
   minItems: 1,
-  maxItems: 3,
-  additionalItemChance: 0.3,
+  maxItems: 2,
+  additionalItemChance: 0.15,
 };
 
 // ============================================
