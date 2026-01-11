@@ -280,7 +280,7 @@ export const CombatBox: React.FC<CombatBoxProps> = ({
         <div className="absolute left-0 top-0 w-full">
         <div
           className={
-            "w-full h-9 bg-zinc-800 rounded-t-xl border-b border-[rgba(180,140,80,0.2)] overflow-hidden relative" +
+            "w-full h-9 bg-zinc-800 border-b-3 border-[rgba(180,140,80,0.3)] overflow-hidden relative" +
             (expGlow ? " ring-4 ring-violet-300/60 ring-offset-0 animate-pulse" : "")
           }
         >
