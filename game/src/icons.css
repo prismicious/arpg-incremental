@@ -2,7 +2,7 @@
   display: inline-block;
   width: 32px;   /* 2x scale for better visibility, adjust as needed */
   height: 32px;
-  background-image: url('/assets/spritesheet_32x32.png');
+  background-image: url('../public/assets/spritesheet_32x32.png');
   background-size: 512px 704px; /* set to actual size of Items.png */
   background-repeat: no-repeat;
 }
